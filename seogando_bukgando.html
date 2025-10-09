@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서간도/북간도 독립전쟁 | NAVI TOUR</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        .content-section {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 40px;
+            text-align: left;
+        }
+        .content-block {
+            flex: 1;
+            padding: 30px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+        .content-block h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 24px;
+            color: var(--accent-gold);
+            border-bottom: 2px solid var(--accent-gold);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .content-block p {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="main-nav">
+            <div class="main-nav-content">
+                <div class="logo-and-search">
+                    <div class="logo-image-sub-nav-container main-nav-logo-container">
+                        <a href="index.html">
+                            <img src="my_logo.png" alt="NAVI TOUR Logo" class="sub-nav-logo main-nav-logo" id="main-logo-image">
+                        </a>
+                    </div>
+                    <div class="nav-tools main-search-box">
+                        <input type="text" class="search-input main-search-input" placeholder="검색">
+                        <i class="fas fa-search search-icon main-search-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="auth-tools">
+                    <div class="auth-top-links">
+                        <a href="#" class="auth-link">로그인</a>
+                        <span class="auth-divider">|</span>
+                        <a href="#" class="auth-link">회원가입</a>
+                        <span class="auth-divider">|</span>
+                        <a href="#" class="auth-link">고객센터</a>
+                    </div>
+                    <div class="auth-bottom-icons">
+                        <a href="#" class="icon-text-link">
+                            <i class="fas fa-user auth-icon"></i> 
+                            <span>마이메뉴</span>
+                        </a>
+                        <a href="#" class="icon-text-link">
+                            <i class="fas fa-calendar-alt auth-icon"></i> 
+                            <span>예약내역</span>
+                        </a>
+                        <a href="#" class="icon-text-link">
+                            <i class="fas fa-heart auth-icon"></i> 
+                            <span>찜</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <nav class="sub-nav">
+            <div class="sub-nav-content">
+                <div class="all-menu-btn" id="all-menu-toggle">
+                    <i class="fas fa-bars"></i> 전체메뉴
+                </div>
+                
+                <ul class="sub-nav-links">
+                    <li class="dropdown-item">
+                        <a href="seogando_bukgando.html">서간도/북간도 독립전쟁</a>
+                        <div class="dropdown-content">
+                            <a href="#">압록강</a>
+                            <a href="#">두만강</a>
+                            <a href="#">백두산</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="geukdong_yeonhaeju.html">극동/연해주 독립전쟁</a>
+                        <div class="dropdown-content">
+                            <a href="#">포시에트</a>
+                            <a href="#">블라디보스톡</a>
+                            <a href="#">하바롭스크</a>
+                            <a href="#">우수리크스</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="#">임시정부의 발자취</a>
+                        <div class="dropdown-content">
+                            <a href="#">상해</a>
+                            <a href="#">함주</a>
+                            <a href="#">난징</a>
+                            <a href="#">진강</a>
+                            <a href="#">장사</a>
+                            <a href="#">유주</a>
+                            <a href="#">치장</a>
+                            <a href="#">충칭</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="#">국내독립운동 유적지</a>
+                        <div class="dropdown-content">
+                            <a href="#">서울</a>
+                            <a href="#">인천</a>
+                            <a href="#">경기</a>
+                            <a href="#">충청</a>
+                            <a href="#">강원</a>
+                            <a href="#">경상</a>
+                            <a href="#">전라</a>
+                            <a href="#">제주</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="#">청소년 비전트립</a>
+                        <div class="dropdown-content">
+                            <a href="#">국토순례</a>
+                            <a href="#">역사탐방</a>
+                            <a href="#">언어연수</a>
+                            <a href="#">해외교류</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="#">각종 테마기행</a>
+                        <div class="dropdown-content">
+                            <a href="#">인물기행</a>
+                            <a href="#">마을기행</a>
+                            <a href="#">생태탐방</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+        <div class="all-menu-dropdown-layer" id="all-menu-layer">
+            <div class="all-menu-content-wrapper">
+                <div class="menu-column">
+                    <h4 class="menu-column-title"><a href="seogando_bukgando.html" style="color: inherit;">서간도/북간도 독립전쟁</a></h4>
+                    <ul class="menu-list">
+                        <li><a href="#">압록강</a></li>
+                        <li><a href="#">두만강</a></li>
+                        <li><a href="#">백두산</a></li>
+                    </ul>
+
+                    <h4 class="menu-column-title"><a href="#">임시정부의 발자취</a></h4>
+                    <ul class="menu-list">
+                        <li><a href="#">상해</a></li>
+                        <li><a href="#">함주</a></li>
+                        <li><a href="#">난징</a></li>
+                        <li><a href="#">진강</a></li>
+                        <li><a href="#">장사</a></li>
+                        <li><a href="#">유주</a></li>
+                        <li><a href="#">치장</a></li>
+                        <li><a href="#">충칭</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-column">
+                    <h4 class="menu-column-title"><a href="geukdong_yeonhaeju.html" style="color: inherit;">극동/연해주 독립전쟁</a></h4>
+                    <ul class="menu-list">
+                        <li><a href="#">포시에트</a></li>
+                        <li><a href="#">블라디보스톡</a></li>
+                        <li><a href="#">하바롭스크</a></li>
+                        <li><a href="#">우수리크스</a></li>
+                    </ul>
+
+                    <h4 class="menu-column-title">국내독립운동 유적지</h4>
+                    <ul class="menu-list">
+                        <li><a href="#">서울</a></li>
+                        <li><a href="#">인천</a></li>
+                        <li><a href="#">경기</a></li>
+                        <li><a href="#">충청</a></li>
+                        <li><a href="#">강원</a></li>
+                        <li><a href="#">경상</a></li>
+                        <li><a href="#">전라</a></li>
+                        <li><a href="#">제주</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-column">
+                    <h4 class="menu-column-title">청소년 비전트립</h4>
+                    <ul class="menu-list">
+                        <li><a href="#">국토순례</a></li>
+                        <li><a href="#">역사탐방</a></li>
+                        <li><a href="#">언어연수</a></li>
+                        <li><a href="#">해외교류</a></li>
+                    </ul>
+
+                    <h4 class="menu-column-title">각종 테마기행</h4>
+                    <ul class="menu-list">
+                        <li><a href="#">인물기행</a></li>
+                        <li><a href="#">마을기행</a></li>
+                        <li><a href="#">생태탐방</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-column">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-header-section" style="background: url('hero-image.jpg') center center / cover no-repeat; height: 50vh; display: flex; justify-content: center; align-items: center; text-align: center; position: relative; background-blend-mode: multiply; background-color: rgba(225, 215, 205, 0.25);">
+            <div class="hero-content" style="color: #fff; text-shadow: 0 0 5px rgba(0, 0, 0, 0.1);">
+                <h1 style="font-size: 60px; letter-spacing: 12px; margin: 0; font-weight: 500; font-family: 'Playfair Display', serif;">서간도/북간도 독립전쟁</h1>
+                <p style="font-size: 24px; margin-top: 10px; font-weight: 300;">독립운동의 불꽃이 피어난 성스러운 땅</p>
+            </div>
+        </section>
+
+        <section class="content-section" style="flex-direction: column; text-align: center;">
+            <h2 style="font-family: 'Playfair Display', serif; font-size: 32px; margin-bottom: 50px; color: var(--text-dark);">서간도와 북간도, 독립운동의 요람</h2>
+            
+            <div class="content-section" style="margin: 0; gap: 30px;">
+                
+                <div class="content-block">
+                    <h3>1. 신흥무관학교와 독립군 양성</h3>
+                    <p>서간도 지역은 독립군을 양성하기 위한 요람이었습니다. 특히 이회영 선생을 비롯한 독립운동가들이 설립한 신흥무관학교는 수많은 독립군 장교를 배출하여 무장투쟁의 기반을 다졌습니다. 이곳에서는 체계적인 군사 훈련과 민족 교육이 이루어졌으며, 독립운동의 정신적, 군사적 중심지 역할을 했습니다.</p>
+                </div>
+                
+                <div class="content-block">
+                    <h3>2. 봉오동 및 청산리 대첩의 현장</h3>
+                    <p>북간도는 1920년 봉오동 전투와 청산리 대첩이라는 독립 전쟁사의 빛나는 승리를 기록한 현장입니다. 김좌진 장군의 북로군정서와 홍범도 장군의 대한독립군 등 연합 부대는 일본군을 대파하며 독립군의 위상을 전 세계에 알렸습니다. 이 지역은 용감한 독립군들의 희생과 승리의 역사를 간직하고 있습니다.</p>
+                </div>
+                
+                <div class="content-block">
+                    <h3>3. 주요 유적지 및 인물</h3>
+                    <p>주요 탐방지로는 용정의 명동촌, 윤동주 시인의 생가, 그리고 백두산으로 향하는 압록강과 두만강 유역이 있습니다. 이 지역은 단순한 지리적 경계를 넘어, 민족의 수난과 저항의 역사를 몸소 체험할 수 있는 성지입니다. 이곳에서 활동했던 수많은 무명 열사들의 숭고한 정신을 기립니다.</p>
+                </div>
+            </div>
+        </section>
+        
+        <section class="quote-section">
+            <p>"Lumina Volages transformed our dream trip into the unforgettable reality."</p>
+            <div class="author-info">
+                <div class="signature">~ Sarah & Yves</div>
+                <div class="author-image-placeholder"></div> 
+                <div class="location">Paris</div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <div class="footer-col"><h4>EXPLORE</h4><a href="#">Aestemy Hasties</a><a href="#">Finewomen & Accessore</a></div>
+            <div class="footer-col"><h4>COMPANY</h4><a href="#">About | Corporate</a><a href="#">Destinations | Experiences</a></div>
+            <div class="footer-col"><h4>LEGAL</h4><a href="#">Privacy</a><a href="#">Terms</a></div>
+            <div class="footer-col"><h4>CONNECT</h4><a href="#">Privacy</a><a href="#">Terms</a>
+                <div class="social-icons"><i class="fab fa-facebook-f"></i><i class="fab fa-twitter"></i><i class="fab fa-instagram"></i></div>
+            </div>
+        </div>
+        <p class="copyright">© 2024 Voyages</p>
+    </footer>
+
+    <script>
+        document.getElementById('all-menu-toggle').addEventListener('click', function() {
+            const allMenuLayer = document.getElementById('all-menu-layer');
+            const subNav = document.querySelector('.sub-nav');
+            
+            allMenuLayer.classList.toggle('active');
+            
+            if (allMenuLayer.classList.contains('active')) {
+                subNav.classList.add('menu-locked');
+            } else {
+                subNav.classList.remove('menu-locked');
+            }
+        });
+    </script>
+</body>
+</html>
