@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAVI TOUR</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* [1] Hero Section 높이 조정 (30vh 유지) */
+        .hero-section {
+            height: 30vh; 
+            /* ★ 경로 수정: main 폴더에서 상위 폴더(..)로 나간 후, image 폴더로 들어갑니다. */
+            background: url('../image/hero-image.jpg') center/cover no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            background-blend-mode: multiply;
+            background-color: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* [2] 헤더 고정 (스크롤 시 따라오게) */
+        header {
+            position: sticky; /* 또는 fixed */
+            top: 0;
+            z-index: 1000; /* 다른 요소 위에 표시되도록 높게 설정 */
+            background-color: #fff; /* 배경색 설정 (뒤의 내용이 비치지 않게) */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* [3] 고정된 헤더 높이만큼 main 콘텐츠 시작 위치를 아래로 내림 */
+        main {
+            padding-top: 0px; 
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav class="main-nav">
+            <div class="main-nav-content">
+                <div class="logo-and-search">
+                    <div class="logo-image-sub-nav-container main-nav-logo-container">
+                        <a href="index.html">
+                            <!-- ★ 로고 이미지 경로 수정 -->
+                            <img src="../image/my_logo.png" alt="NAVI TOUR Logo" class="sub-nav-logo main-nav-logo" id="main-logo-image">
+                        </a>
+                    </div>
+                    <div class="nav-tools main-search-box">
+                        <input type="text" class="search-input main-search-input" placeholder="검색">
+                        <i class="fas fa-search search-icon main-search-icon"></i>
+                    </div>
+                </div>
+                
+                <div class="auth-tools">
+                    <div class="auth-top-links">
+                        <a href="#" class="auth-link">로그인</a>
+                        <span class="auth-divider">|</span>
+                        <a href="#" class="auth-link">회원가입</a>
+                        <span class="auth-divider">|</span>
+                        <a href="#" class="auth-link">고객센터</a>
+                    </div>
+                    <div class="auth-bottom-icons">
+                        <a href="#" class="icon-text-link">
+                            <i class="fas fa-user auth-icon"></i> 
+                            <span>마이메뉴</span>
+                        </a>
+                        <a href="#" class="icon-text-link">
+                            <i class="fas fa-calendar-alt auth-icon"></i> 
+                            <span>예약내역</span>
+                        </a>
+                        <a href="#" class="icon-text-link">
+                            <i class="fas fa-heart auth-icon"></i> 
+                            <span>찜</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        
+        <nav class="sub-nav">
+            <div class="sub-nav-content">
+                <div class="all-menu-btn" id="all-menu-toggle">
+                    <i class="fas fa-bars"></i> 전체메뉴
+                </div>
+                
+                <ul class="sub-nav-links">
+                    <li class="dropdown-item">
+                        <!-- ★ 링크 경로 수정: main에서 상위(..)/global/China 폴더로 이동 -->
+                        <a href="../global/China/seogando_bukgando.html">서간도/북간도 독립전쟁</a>
+                        <div class="dropdown-content">
+                            <a href="#">압록강</a>
+                            <a href="#">두만강</a>
+                            <a href="#">백두산</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-item">
+                        <!-- ★ 링크 경로 수정: main에서 상위(..)/global/Russia 폴더로 이동 -->
+                        <a href="../global/Russia/geukdong_yeonhaeju.html">극동/연해주 독립전쟁</a>
+                        <div class="dropdown-content">
+                            <a href="#">포시에트</a>
+                            <a href="#">블라디보스톡</a>
+                            <a href="#">하바롭스크</a>
+                            <a href="#">우수리크스</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="#">임시정부의 발자취</a>
+                        <div class="dropdown-content">
+                            <a href="#">상해</a>
+                            <a href="#">함주</a>
+                            <a href="#">난징</a>
+                            <a href="#">진강</a>
+                            <a href="#">장사</a>
+                            <a href="#">유주</a>
+                            <a href="#">치장</a>
+                            <a href="#">충칭</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="#">해외여행</a> <div class="dropdown-content">
+                            <a href="#">일본</a>
+                            <a href="#">몽골</a>
+                            <a href="#">베트남</a>
+                            <a href="#">하와이</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="#">청소년 비전트립</a>
+                        <div class="dropdown-content">
+                            <a href="#">국토순례</a>
+                            <a href="#">역사탐방</a>
+                            <a href="#">언어연수</a>
+                            <a href="#">해외교류</a>
+                        </div>
+                    </li>
+                    <li class="dropdown-item">
+                        <a href="#">각종 테마기행</a>
+                        <div class="dropdown-content">
+                            <a href="#">인물기행</a>
+                            <a href="#">마을기행</a>
+                            <a href="#">생태탐방</a>
+                            <a href="#">환경탐방</a> </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        
+        <div class="all-menu-dropdown-layer" id="all-menu-layer">
+            <div class="all-menu-content-wrapper">
+                <div class="menu-column">
+                    <!-- ★ 링크 경로 수정: main에서 상위(..)/global/China 폴더로 이동 -->
+                    <h4 class="menu-column-title"><a href="../global/China/seogando_bukgando.html" style="color: inherit;">서간도/북간도 독립전쟁</a></h4>
+                    <ul class="menu-list">
+                        <li><a href="#">압록강</a></li>
+                        <li><a href="#">두만강</a></li>
+                        <li><a href="#">백두산</a></li>
+                    </ul>
+
+                    <h4 class="menu-column-title"><a href="#">임시정부의 발자취</a></h4>
+                    <ul class="menu-list">
+                        <li><a href="#">상해</a></li>
+                        <li><a href="#">함주</a></li>
+                        <li><a href="#">난징</a></li>
+                        <li><a href="#">진강</a></li>
+                        <li><a href="#">장사</a></li>
+                        <li><a href="#">유주</a></li>
+                        <li><a href="#">치장</a></li>
+                        <li><a href="#">충칭</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-column">
+                    <!-- ★ 링크 경로 수정: main에서 상위(..)/global/Russia 폴더로 이동 -->
+                    <h4 class="menu-column-title"><a href="../global/Russia/geukdong_yeonhaeju.html" style="color: inherit;">극동/연해주 독립전쟁</a></h4>
+                    <ul class="menu-list">
+                        <li><a href="#">포시에트</a></li>
+                        <li><a href="#">블라디보스톡</a></li>
+                        <li><a href="#">하바롭스크</a></li>
+                        <li><a href="#">우수리크스</a></li>
+                    </ul>
+
+                    <h4 class="menu-column-title">해외여행</h4> <ul class="menu-list">
+                        <li><a href="#">일본</a></li>
+                        <li><a href="#">몽골</a></li>
+                        <li><a href="#">베트남</a></li>
+                        <li><a href="#">하와이</a></li>
+                    </ul>
+                </div>
+                
+                <div class="menu-column">
+                    <h4 class="menu-column-title">청소년 비전트립</h4>
+                    <ul class="menu-list">
+                        <li><a href="#">국토순례</a></li>
+                        <li><a href="#">역사탐방</a></li>
+                        <li><a href="#">언어연수</a></li>
+                        <li><a href="#">해외교류</a></li>
+                    </ul>
+
+                    <h4 class="menu-column-title">각종 테마기행</h4>
+                    <ul class="menu-list">
+                        <li><a href="#">인물기행</a></li>
+                        <li><a href="#">마을기행</a></li>
+                        <li><a href="#">생태탐방</a></li>
+                        <li><a href="#">환경탐방</a></li>
+                    </ul>
+                </div>
+
+                <div class="menu-column">
+                    <h4 class="menu-column-title">고객센터</h4>
+                    <ul class="menu-list">
+                        <li><a href="#">공지사항</a></li>
+                        <li><a href="#">자주 묻는 질문</a></li>
+                        <li><a href="#">문의하기</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>NAVI TOUR</h1>
+                <p>당신의 다음 비상을 위한 이정표</p>
+            </div>
+        </section>
+
+        <section class="trips-section">
+            <div class="trip-card purple-bg">
+                <!-- ★ 이미지 경로 수정 -->
+                <div class="image-box"><img src="../image/trip1.jpg" alt="서간도의 길"></div>
+                <h2>서간도의 길 </h2>
+                <!-- ★ 링크 경로 수정 -->
+                <a href="../global/China/seogando_bukgando.html" class="btn-discover">DISCOVER MORE</a>
+            </div>
+            <div class="trip-card mint-bg">
+                <!-- ★ 이미지 경로 수정 (러시아어 파일명) -->
+                <div class="image-box"><img src="../image/trip2.jpg" alt="연해주의 길"></div>
+                <h2>연해주의 길</h2>
+                <!-- ★ 링크 경로 수정 -->
+                <a href="../global/Russia/geukdong_yeonhaeju.html" class="btn-discover">DISCOVER MORE</a>
+            </div>
+            <div class="trip-card blue-bg">
+                <!-- ★ 이미지 경로 수정 -->
+                <div class="image-box"><img src="../image/trip3.jpg" alt="해외여행"></div>
+                <h2>해외여행</h2> <a href="#" class="btn-discover">DISCOVER MORE</a>
+            </div>
+        </section>
+
+        <section class="quote-section">
+            <p>"NAVI TOUR는 우리의 꿈을 잊지 못할 현실로 바꾸어 주었습니다."</p> <div class="author-info">
+                <div class="signature">~ 김철수 & 이영희</div> <div class="author-image-placeholder"></div> 
+                <div class="location">대한민국</div> </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-links">
+            <div class="footer-col">
+                <h4>EXPLORE</h4>
+                <a href="#">여행 상품</a>
+                <a href="#">테마 기행</a>
+            </div>
+            <div class="footer-col">
+                <h4>COMPANY</h4>
+                <a href="#">회사 소개</a>
+                <a href="#">목적지 & 경험</a>
+            </div>
+            <div class="footer-col">
+                <h4>LEGAL</h4>
+                <a href="#">개인정보처리방침</a>
+                <a href="#">이용약관</a>
+            </div>
+            <div class="footer-col">
+                <h4>CONNECT</h4>
+                <a href="#">문의하기</a>
+                <a href="#">고객센터</a>
+                <div class="social-icons">
+                    <i class="fab fa-facebook-f"></i>
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-instagram"></i>
+                </div>
+            </div>
+        </div>
+        <p class="copyright">© 2024 NAVI TOUR. All rights reserved.</p> </footer>
+
+    <script>
+        document.getElementById('all-menu-toggle').addEventListener('click', function() {
+            const allMenuLayer = document.getElementById('all-menu-layer');
+            const subNav = document.querySelector('.sub-nav');
+            
+            allMenuLayer.classList.toggle('active');
+            
+            if (allMenuLayer.classList.contains('active')) {
+                subNav.classList.add('menu-locked');
+            } else {
+                subNav.classList.remove('menu-locked');
+            }
+        });
+
+        // 드롭다운 메뉴 활성화 (마우스 호버)
+        const dropdownItems = document.querySelectorAll('.sub-nav-links .dropdown-item');
+
+        dropdownItems.forEach(item => {
+            item.addEventListener('mouseenter', () => {
+                item.querySelector('.dropdown-content').style.display = 'block';
+            });
+            item.addEventListener('mouseleave', () => {
+                item.querySelector('.dropdown-content').style.display = 'none';
+            });
+        });
+
+        // 전체 메뉴 레이어 외부 클릭 시 닫기
+        document.addEventListener('click', (event) => {
+            const allMenuLayer = document.getElementById('all-menu-layer');
+            const allMenuToggle = document.getElementById('all-menu-toggle');
+            if (!allMenuLayer.contains(event.target) && !allMenuToggle.contains(event.target)) {
+                allMenuLayer.classList.remove('active');
+                document.querySelector('.sub-nav').classList.remove('menu-locked');
+            }
+        });
+    </script>
+</body>
+</html>
