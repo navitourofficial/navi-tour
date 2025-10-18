@@ -4,41 +4,45 @@
   <!-- ✅ layout.html 로더 (헤더/전체메뉴/푸터 자동 포함) -->
 <script>
   (async function injectLayout() {
-    // GitHub Pages에서는 '/<repo-name>'를 붙이고, 로컬에선 공백
-    const BASE = location.hostname.endsWith('github.io') ? '/navi-tour' : '';
+    try {
+      // GitHub Pages면 '/navi-tour' 프리픽스, 로컬(Live Server)이면 빈 문자열
+      const BASE = location.hostname.endsWith('github.io') ? '/navi-tour' : '';
 
-    // 1) layout.html 불러오기 (절대경로 → BASE 프리픽스)
-    const res  = await fetch(`${BASE}/layout/layout.html`, { cache: 'no-store' });
-    const html = await res.text();
-    const doc  = new DOMParser().parseFromString(html, 'text/html');
+      // 1) layout.html 로드 (절대경로 대신 BASE 접두어 사용)
+      const res  = await fetch(`${BASE}/layout/layout.html`, { cache: 'no-store' });
+      const html = await res.text();
+      const doc  = new DOMParser().parseFromString(html, 'text/html');
 
-    // 2) 레이아웃 내부의 모든 href/src가 '/'로 시작하면 BASE를 붙여서 고쳐준다
-    const prefix = (url) => (url && url.startsWith('/')) ? `${BASE}${url}` : url;
+      // 2) 레이아웃 내부의 절대경로(/로 시작) href/src를 BASE 붙여서 보정
+      const addBase = (url) => (url && url.startsWith('/')) ? `${BASE}${url}` : url;
+      doc.querySelectorAll('[href]').forEach(el => el.setAttribute('href', addBase(el.getAttribute('href'))));
+      doc.querySelectorAll('[src]').forEach(el  => el.setAttribute('src',  addBase(el.getAttribute('src'))));
 
-    doc.querySelectorAll('[href]').forEach(el => el.setAttribute('href', prefix(el.getAttribute('href'))));
-    doc.querySelectorAll('[src]').forEach(el  => el.setAttribute('src',  prefix(el.getAttribute('src'))));
+      // 3) 헤더/푸터/스크립트 삽입
+      const $headerTpl = doc.getElementById('layout-header');
+      const $footerTpl = doc.getElementById('layout-footer');
+      const $scriptTpl = doc.getElementById('layout-script');
 
-    // 3) 헤더/푸터/스크립트 삽입
-    const $headerTpl = doc.getElementById('layout-header');
-    const $footerTpl = doc.getElementById('layout-footer');
-    const $scriptTpl = doc.getElementById('layout-script');
+      const headerFrag = $headerTpl ? $headerTpl.content.cloneNode(true) : null;
+      const footerFrag = $footerTpl ? $footerTpl.content.cloneNode(true) : null;
 
-    const headerFrag = $headerTpl ? $headerTpl.content.cloneNode(true) : null;
-    const footerFrag = $footerTpl ? $footerTpl.content.cloneNode(true) : null;
+      const main = document.querySelector('main');
+      if (headerFrag) {
+        if (main) document.body.insertBefore(headerFrag, main);
+        else document.body.prepend(headerFrag);
+      }
+      if (footerFrag) document.body.appendChild(footerFrag);
 
-    const main = document.querySelector('main');
-    if (headerFrag) {
-      if (main) document.body.insertBefore(headerFrag, main);
-      else document.body.prepend(headerFrag);
-    }
-    if (footerFrag) document.body.appendChild(footerFrag);
-
-    if ($scriptTpl) {
-      const inline = $scriptTpl.content.querySelector('script');
-      if (inline) document.body.appendChild(inline.cloneNode(true));
+      if ($scriptTpl) {
+        const inline = $scriptTpl.content.querySelector('script');
+        if (inline) document.body.appendChild(inline.cloneNode(true));
+      }
+    } catch (e) {
+      console.error('layout load error', e);
     }
   })();
 </script>
+
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -308,4 +312,3 @@
 
 </body>
 </html>
-
