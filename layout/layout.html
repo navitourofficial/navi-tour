@@ -1,0 +1,263 @@
+<!-- /layout/layout.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>NAVI TOUR LAYOUT</title>
+</head>
+<body>
+  <!-- ========================== 1. HEADER (공통) ========================== -->
+  <template id="layout-header">
+    <header>
+      <!-- ===== 1-1. 메인 네비게이션 바 ===== -->
+      <nav class="main-nav">
+        <div class="main-nav-content">
+          <!-- 1-1-1. 로고 & 검색 -->
+          <div class="logo-and-search">
+            <div class="logo-image-sub-nav-container main-nav-logo-container">
+              <a href="/main/index.html">
+                <img src="/image/my_logo.png" alt="NAVI TOUR Logo" class="sub-nav-logo main-nav-logo" id="main-logo-image">
+              </a>
+            </div>
+            <div class="nav-tools main-search-box">
+              <input type="text" class="search-input main-search-input" placeholder="검색">
+              <i class="fas fa-search search-icon main-search-icon"></i>
+            </div>
+          </div>
+
+          <!-- 1-1-2. 인증/마이메뉴 -->
+          <div class="auth-tools">
+            <div class="auth-top-links">
+              <a href="#" class="auth-link">로그인</a>
+              <span class="auth-divider">|</span>
+              <a href="#" class="auth-link">회원가입</a>
+              <span class="auth-divider">|</span>
+              <a href="#" class="auth-link">고객센터</a>
+            </div>
+            <div class="auth-bottom-icons">
+              <a href="#" class="icon-text-link">
+                <i class="fas fa-user auth-icon"></i><span>마이메뉴</span>
+              </a>
+              <a href="#" class="icon-text-link">
+                <i class="fas fa-calendar-alt auth-icon"></i><span>예약내역</span>
+              </a>
+              <a href="#" class="icon-text-link">
+                <i class="fas fa-heart auth-icon"></i><span>찜</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ===== 1-2. 서브 네비게이션 바 ===== -->
+      <nav class="sub-nav">
+        <div class="sub-nav-content">
+          <div class="all-menu-btn" id="all-menu-toggle">
+            <i class="fas fa-bars"></i> 전체메뉴
+          </div>
+          <ul class="sub-nav-links">
+            <li class="dropdown-item">
+              <!-- ✅ 상위 링크 클릭 시 이동 막고 드롭박스만 열리게 -->
+              <a href="#" id="china-menu-link">서간도/북간도</a>
+              <div class="dropdown-content">
+                <!-- ✅ 하위 링크 실제 페이지로 이동 -->
+                <a href="/global/China/seogando.html">서간도(고구려)</a>
+                <a href="/global/China/bukgando.html">북간도(발해)</a>
+              </div>
+            </li>
+            <li class="dropdown-item">
+              <a href="/global/Russia/geukdong_yeonhaeju.html">극동/연해주</a>
+              <div class="dropdown-content">
+                <a href="#">블라디보스톡</a>
+                <a href="#">우수리크스</a>
+              </div>
+            </li>
+            <li class="dropdown-item">
+              <a href="#">임시정부의 발자취</a>
+              <div class="dropdown-content">
+                <a href="#">상해</a><a href="#">함주</a><a href="#">난징</a><a href="#">진강</a>
+                <a href="#">장사</a><a href="#">유주</a><a href="#">치장</a><a href="#">충칭</a>
+              </div>
+            </li>
+            <li class="dropdown-item">
+              <a href="#">일본/하와이 독립전쟁</a>
+              <div class="dropdown-content">
+                <a href="#">일본</a><a href="#">하와이</a>
+              </div>
+            </li>
+            <li class="dropdown-item">
+              <a href="#">테마기행</a>
+              <div class="dropdown-content">
+                <a href="#">인물기행</a><a href="#">마을기행</a><a href="#">생태탐방</a><a href="#">환경탐방</a>
+                <a href="#">국토순례</a><a href="#">역사탐방</a><a href="#">언어연수</a><a href="#">해외교류</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <style>
+        .sub-nav-content { padding-left: 31px; }  /* 본문과 같은 값으로 */
+
+        /* ✅ 폰트 스타일 적용 (Pretendard + Noto Sans KR) */
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        .sub-nav,
+        .sub-nav a,
+        .sub-nav .dropdown-content a,
+        .all-menu-btn {
+          font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+          font-weight: 500;
+          letter-spacing: 0.3px;
+          color: #222;
+        }
+
+        .sub-nav a:hover {
+          color: #0056b3;
+          transition: color 0.2s ease;
+        }
+      </style>
+
+      <!-- ===== 1-3. 전체 메뉴 드롭다운 레이어 ===== -->
+      <div class="all-menu-dropdown-layer" id="all-menu-layer">
+        <div class="all-menu-content-wrapper">
+          <div class="menu-column">
+            <h4 class="menu-column-title"><a href="/global/China/seogando_bukgando.html" style="color: inherit;">서간도/북간도</a></h4>
+            <ul class="menu-list">
+              <li><a href="#">서간도(고구려)</a></li>
+              <li><a href="#">북간도(발해)</a></li>
+            </ul>
+
+            <h4 class="menu-column-title"><a href="#">임시정부의 발자취</a></h4>
+            <ul class="menu-list">
+              <li><a href="#">상해</a></li><li><a href="#">함주</a></li><li><a href="#">난징</a></li><li><a href="#">진강</a></li>
+              <li><a href="#">장사</a></li><li><a href="#">유주</a></li><li><a href="#">치장</a></li><li><a href="#">충칭</a></li>
+            </ul>
+          </div>
+
+          <div class="menu-column">
+            <h4 class="menu-column-title"><a href="/global/Russia/geukdong_yeonhaeju.html" style="color: inherit;">블라디보스톡-우수리스크</a></h4>
+            <ul class="menu-list">
+              <li><a href="#">블라디보스톡</a></li>
+              <li><a href="#">우수리크스</a></li>
+            </ul>
+
+            <h4 class="menu-column-title">일본/하와이 독립전쟁</h4>
+            <ul class="menu-list">
+              <li><a href="#">일본</a></li><li><a href="#">하와이</a></li>
+            </ul>
+          </div>
+
+          <div class="menu-column">
+            <h4 class="menu-column-title">베트남 평화기행</h4>
+            <ul class="menu-list">
+              <li><a href="#">하노이</a></li><li><a href="#">다낭</a></li>
+            </ul>
+
+            <h4 class="menu-column-title">테마기행</h4>
+            <ul class="menu-list">
+              <li><a href="#">국토순례</a></li><li><a href="#">역사탐방</a></li><li><a href="#">언어연수</a></li><li><a href="#">해외교류</a></li>
+              <li><a href="#">인물기행</a></li><li><a href="#">마을기행</a></li><li><a href="#">생태탐방</a></li><li><a href="#">환경탐방</a></li>
+            </ul>
+          </div>
+
+          <div class="menu-column">
+            <h4 class="menu-column-title">고객센터</h4>
+            <ul class="menu-list">
+              <li><a href="#">공지사항</a></li>
+              <li><a href="#">자주 묻는 질문</a></li>
+              <li><a href="#">문의하기</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+  </template>
+
+  <!-- ========================== 2. FOOTER (공통) ========================== -->
+  <template id="layout-footer">
+    <footer>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>EXPLORE</h4>
+          <a href="#">여행 상품</a>
+          <a href="#">테마 기행</a>
+        </div>
+        <div class="footer-col">
+          <h4>COMPANY</h4>
+          <a href="#">회사 소개</a>
+          <a href="#">목적지 & 경험</a>
+        </div>
+        <div class="footer-col">
+          <h4>LEGAL</h4>
+          <a href="#">개인정보처리방침</a>
+          <a href="#">이용약관</a>
+        </div>
+        <div class="footer-col">
+          <h4>CONNECT</h4>
+          <a href="#">문의하기</a>
+          <a href="#">고객센터</a>
+          <div class="social-icons">
+            <i class="fab fa-facebook-f"></i>
+            <i class="fab fa-twitter"></i>
+            <i class="fab fa-instagram"></i>
+          </div>
+        </div>
+      </div>
+      <p class="copyright">© 2025 NAVI TOUR. All rights reserved.</p>
+    </footer>
+  </template>
+
+  <!-- ========================== 3. SCRIPT (공통: 메뉴 토글/드롭다운) ========================== -->
+  <template id="layout-script">
+    <script>
+      (function () {
+        // 3-1. 전체메뉴 토글
+        const allMenuToggle = document.getElementById('all-menu-toggle');
+        const allMenuLayer  = document.getElementById('all-menu-layer');
+        const subNav        = document.querySelector('.sub-nav');
+
+        if (allMenuToggle && allMenuLayer && subNav) {
+          allMenuToggle.addEventListener('click', () => {
+            allMenuLayer.classList.toggle('active');
+            subNav.classList.toggle('menu-locked', allMenuLayer.classList.contains('active'));
+          });
+
+          document.addEventListener('click', (e) => {
+            if (!allMenuLayer.contains(e.target) && !allMenuToggle.contains(e.target)) {
+              allMenuLayer.classList.remove('active');
+              subNav.classList.remove('menu-locked');
+            }
+          });
+        }
+
+        // 3-2. 드롭다운 hover
+        const dropdownItems = document.querySelectorAll('.sub-nav-links .dropdown-item');
+        dropdownItems.forEach(item => {
+          const menu = item.querySelector('.dropdown-content');
+          if (!menu) return;
+          item.addEventListener('mouseenter', () => menu.style.display = 'block');
+          item.addEventListener('mouseleave', () => menu.style.display = 'none');
+        });
+
+        // 3-3. '서간도/북간도' 상위 메뉴: 클릭 시 이동 막고 드롭박스 토글
+        const chinaMenuLink = document.getElementById('china-menu-link');
+        if (chinaMenuLink) {
+          const chinaDropdown = chinaMenuLink.parentElement.querySelector('.dropdown-content');
+          chinaMenuLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!chinaDropdown) return;
+            chinaDropdown.style.display = (chinaDropdown.style.display === 'block') ? 'none' : 'block';
+          });
+          // 바깥 클릭 시 닫기
+          document.addEventListener('click', (e) => {
+            if (!chinaMenuLink.parentElement.contains(e.target)) {
+              if (chinaDropdown) chinaDropdown.style.display = 'none';
+            }
+          });
+        }
+      })();
+    </script>
+  </template>
+</body>
+</html>
