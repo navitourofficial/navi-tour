@@ -1,331 +1,307 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NAVI TOUR</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <style>
-        /* [1] Hero Section 높이 조정 (30vh 유지) */
-        .hero-section {
-            height: 30vh; 
-            /* ★ 경로 수정: main 폴더에서 상위 폴더(..)로 나간 후, image 폴더로 들어갑니다. */
-            background: url('../image/hero-image.jpg') center/cover no-repeat;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            position: relative;
-            background-blend-mode: multiply;
-            background-color: rgba(0, 0, 0, 0.4);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+  <!-- ✅ layout.html 로더 (헤더/전체메뉴/푸터 자동 포함) -->
+  <script>
+    (async function injectLayout() {
+      try {
+        const res = await fetch('/layout/layout.html', { cache: 'no-store' });
+        const html = await res.text();
+        const doc  = new DOMParser().parseFromString(html, 'text/html');
 
-        /* [2] 헤더 고정 (스크롤 시 따라오게) */
-        header {
-            position: sticky; /* 또는 fixed */
-            top: 0;
-            z-index: 1000; /* 다른 요소 위에 표시되도록 높게 설정 */
-            background-color: #fff; /* 배경색 설정 (뒤의 내용이 비치지 않게) */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
+        const $headerTpl = doc.getElementById('layout-header');
+        const $footerTpl = doc.getElementById('layout-footer');
+        const $scriptTpl = doc.getElementById('layout-script');
 
-        /* [3] 고정된 헤더 높이만큼 main 콘텐츠 시작 위치를 아래로 내림 */
-        main {
-            padding-top: 0px; 
+        const headerFrag = $headerTpl ? $headerTpl.content.cloneNode(true) : null;
+        const footerFrag = $footerTpl ? $footerTpl.content.cloneNode(true) : null;
+
+        const main = document.querySelector('main');
+        if (headerFrag) {
+          if (main) document.body.insertBefore(headerFrag, main);
+          else document.body.prepend(headerFrag);
         }
-    </style>
+        if (footerFrag) document.body.appendChild(footerFrag);
+
+        if ($scriptTpl) {
+          const inline = $scriptTpl.content.querySelector('script');
+          if (inline) {
+            const s = document.createElement('script');
+            s.textContent = inline.textContent;
+            document.body.appendChild(s);
+          }
+        }
+      } catch (e) {
+        console.error('layout include failed:', e);
+      }
+    })();
+  </script>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>서간도/북간도   명품 라인업 | NAVI TOUR</title>
+  <link rel="stylesheet" href="../../main/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    :root{
+      --ink:#0e1f2c; --muted:#5f6b77; --line:#e7ebf0;
+      --brand:#044b7d; --brand-d:#033c63; --bg:#f7f8fb; --card:#fff;
+      --gold:#c6a24a; --shadow:0 12px 28px rgba(0,0,0,.08);
+      --container-w:1200px;          /* 본문 컨테이너 폭 */
+      --half:600px;                  /* 컨테이너 반폭 */
+      --sticky-offset:80px;          /* 헤더 보정 (JS에서 갱신) */
+    }
+    *{box-sizing:border-box}
+    body{font-family:'Noto Sans KR',sans-serif;color:var(--ink);background:#fff;}
+    main{max-width:var(--container-w);margin:0 auto;padding:20px;}
+
+    /* Hero */
+    .hero{border-radius:18px;overflow:hidden;min-height:340px;color:#fff;
+      background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.35)),url('../../image/banner_seogando.png') center/cover no-repeat;
+      display:grid;place-items:center;text-align:center;box-shadow:var(--shadow);}
+    .hero h1{font-family:'Playfair Display',serif;font-size:2.8rem;margin:0 0 6px;}
+    .hero p{margin:0;opacity:.9}
+
+    /* Concierge box */
+    .concierge{
+      margin-top:-30px;display:flex;align-items:center;gap:14px;background:#fff;
+      border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+      padding:14px 18px;}
+    .concierge i{color:var(--gold);font-size:1.3rem}
+    .concierge .txt{flex:1}
+    .concierge .cta{
+      background:var(--gold);border:none;border-radius:10px;padding:10px 16px;color:#fff;font-weight:700;text-decoration:none}
+    .concierge .cta:hover{background:#b18c32}
+
+    /* 본문 3열 그리드 */
+    .grid3{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:18px;
+      margin-top:28px;
+    }
+    @media (max-width:1024px){ .grid3{grid-template-columns:repeat(2,1fr);} }
+    @media (max-width:640px){ .grid3{grid-template-columns:1fr;} }
+
+    /* 카드 */
+    .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);transition:.2s;}
+    .card:hover{transform:translateY(-4px);}
+    .thumb img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block}
+    .body{padding:14px;}
+    .body h3{margin:0;font-size:1.1rem;}
+    .body p{margin:6px 0;color:var(--muted);font-size:.9rem;}
+    .tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0;}
+    .tag{border:1px solid #d9e0e7;border-radius:999px;padding:6px 10px;font-size:.85rem;color:#22303f;background:#fafbfd;}
+    .tag i{margin-right:4px;color:#1f74b5;}
+    .meta{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+    .price{font-weight:800;color:var(--brand);}
+    .actions{display:flex;gap:8px;margin-top:10px;}
+    .actions a{padding:8px 12px;border-radius:10px;text-decoration:none;font-size:.9rem;}
+    .btn-ghost{border:1px solid #d9e0e7;background:#fff;color:#1c2b38;}
+    .btn-main{border:1px solid var(--brand-d);background:var(--brand);color:#fff;}
+    .add{margin-top:6px;font-size:.85rem;color:#687583;}
+
+    /* 우측 여백 고정 필터 (컨테이너 바깥) */
+    .side-filter{
+      position:fixed;
+      left: calc(50% + var(--half) + (100vw - var(--container-w))/4);
+      transform: translateX(-50%);
+      top: calc(var(--sticky-offset) + 8px);
+      width: 260px;
+      background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+      padding:14px; z-index: 900;
+    }
+    .side-filter h3{font-size:1.05rem;margin:0 0 10px;}
+    .field{display:flex;flex-direction:column;gap:4px;margin-bottom:10px}
+    .sel,.ipt{padding:10px 12px;border:1px solid #d9e0e7;border-radius:10px;}
+    .chips{display:flex;flex-wrap:wrap;gap:6px}
+    .chip{padding:7px 12px;border:1px solid #d9e0e7;border-radius:999px;cursor:pointer;font-size:.9rem;color:#22303f;background:#fff}
+    .chip.active{background:var(--brand);color:#fff;border-color:var(--brand-d)}
+    .btn-apply{width:100%;padding:10px 0;background:var(--brand);border:none;border-radius:10px;color:#fff;font-weight:700;margin-top:6px}
+
+    main{ padding-right: 20px; }
+    @media (max-width:1400px){
+      .side-filter{left:auto; right:20px; transform:none;}
+      main{padding-right:300px;}
+    }
+    @media (max-width:960px){
+      .side-filter{position:static; width:auto; margin:14px 0 0 0;}
+      main{padding-right:20px;}
+    }
+
+    .bottom-box{
+      margin:28px 0 40px; padding:20px;border:1px solid var(--line);
+      background:#f9fafc;border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .bottom-box b{color:#123a59}
+    .bottom-box .btns{display:flex;gap:8px;}
+    .bottom-box a{padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:700;}
+    .bottom-box .ask{background:var(--brand);color:#fff;}
+    .bottom-box .pdf{background:#fff;color:#1e2b38;border:1px solid #d9e0e7;}
+  </style>
 </head>
 <body>
-
-    <header>
-        <nav class="main-nav">
-            <div class="main-nav-content">
-                <div class="logo-and-search">
-                    <div class="logo-image-sub-nav-container main-nav-logo-container">
-                        <a href="index.html">
-                            <!-- ★ 로고 이미지 경로 수정 -->
-                            <img src="../image/my_logo.png" alt="NAVI TOUR Logo" class="sub-nav-logo main-nav-logo" id="main-logo-image">
-                        </a>
-                    </div>
-                    <div class="nav-tools main-search-box">
-                        <input type="text" class="search-input main-search-input" placeholder="검색">
-                        <i class="fas fa-search search-icon main-search-icon"></i>
-                    </div>
-                </div>
-                
-                <div class="auth-tools">
-                    <div class="auth-top-links">
-                        <a href="#" class="auth-link">로그인</a>
-                        <span class="auth-divider">|</span>
-                        <a href="#" class="auth-link">회원가입</a>
-                        <span class="auth-divider">|</span>
-                        <a href="#" class="auth-link">고객센터</a>
-                    </div>
-                    <div class="auth-bottom-icons">
-                        <a href="#" class="icon-text-link">
-                            <i class="fas fa-user auth-icon"></i> 
-                            <span>마이메뉴</span>
-                        </a>
-                        <a href="#" class="icon-text-link">
-                            <i class="fas fa-calendar-alt auth-icon"></i> 
-                            <span>예약내역</span>
-                        </a>
-                        <a href="#" class="icon-text-link">
-                            <i class="fas fa-heart auth-icon"></i> 
-                            <span>찜</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </nav>
-        
-        <nav class="sub-nav">
-            <div class="sub-nav-content">
-                <div class="all-menu-btn" id="all-menu-toggle">
-                    <i class="fas fa-bars"></i> 전체메뉴
-                </div>
-                
-                <ul class="sub-nav-links">
-                    <li class="dropdown-item">
-                        <!-- ★ 링크 경로 수정: main에서 상위(..)/global/China 폴더로 이동 -->
-                        <a href="../global/China/seogando_bukgando.html">서간도/북간도 독립전쟁</a>
-                        <div class="dropdown-content">
-                            <a href="#">압록강</a>
-                            <a href="#">두만강</a>
-                            <a href="#">백두산</a>
-                        </div>
-                    </li>
-                    <li class="dropdown-item">
-                        <!-- ★ 링크 경로 수정: main에서 상위(..)/global/Russia 폴더로 이동 -->
-                        <a href="../global/Russia/geukdong_yeonhaeju.html">극동/연해주 독립전쟁</a>
-                        <div class="dropdown-content">
-                            <a href="#">포시에트</a>
-                            <a href="#">블라디보스톡</a>
-                            <a href="#">하바롭스크</a>
-                            <a href="#">우수리크스</a>
-                        </div>
-                    </li>
-                    <li class="dropdown-item">
-                        <a href="#">임시정부의 발자취</a>
-                        <div class="dropdown-content">
-                            <a href="#">상해</a>
-                            <a href="#">함주</a>
-                            <a href="#">난징</a>
-                            <a href="#">진강</a>
-                            <a href="#">장사</a>
-                            <a href="#">유주</a>
-                            <a href="#">치장</a>
-                            <a href="#">충칭</a>
-                        </div>
-                    </li>
-                    <li class="dropdown-item">
-                        <a href="#">해외여행</a> <div class="dropdown-content">
-                            <a href="#">일본</a>
-                            <a href="#">몽골</a>
-                            <a href="#">베트남</a>
-                            <a href="#">하와이</a>
-                        </div>
-                    </li>
-                    <li class="dropdown-item">
-                        <a href="#">청소년 비전트립</a>
-                        <div class="dropdown-content">
-                            <a href="#">국토순례</a>
-                            <a href="#">역사탐방</a>
-                            <a href="#">언어연수</a>
-                            <a href="#">해외교류</a>
-                        </div>
-                    </li>
-                    <li class="dropdown-item">
-                        <a href="#">각종 테마기행</a>
-                        <div class="dropdown-content">
-                            <a href="#">인물기행</a>
-                            <a href="#">마을기행</a>
-                            <a href="#">생태탐방</a>
-                            <a href="#">환경탐방</a> </div>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        
-        <div class="all-menu-dropdown-layer" id="all-menu-layer">
-            <div class="all-menu-content-wrapper">
-                <div class="menu-column">
-                    <!-- ★ 링크 경로 수정: main에서 상위(..)/global/China 폴더로 이동 -->
-                    <h4 class="menu-column-title"><a href="../global/China/seogando_bukgando.html" style="color: inherit;">서간도/북간도 독립전쟁</a></h4>
-                    <ul class="menu-list">
-                        <li><a href="#">압록강</a></li>
-                        <li><a href="#">두만강</a></li>
-                        <li><a href="#">백두산</a></li>
-                    </ul>
-
-                    <h4 class="menu-column-title"><a href="#">임시정부의 발자취</a></h4>
-                    <ul class="menu-list">
-                        <li><a href="#">상해</a></li>
-                        <li><a href="#">함주</a></li>
-                        <li><a href="#">난징</a></li>
-                        <li><a href="#">진강</a></li>
-                        <li><a href="#">장사</a></li>
-                        <li><a href="#">유주</a></li>
-                        <li><a href="#">치장</a></li>
-                        <li><a href="#">충칭</a></li>
-                    </ul>
-                </div>
-
-                <div class="menu-column">
-                    <!-- ★ 링크 경로 수정: main에서 상위(..)/global/Russia 폴더로 이동 -->
-                    <h4 class="menu-column-title"><a href="../global/Russia/geukdong_yeonhaeju.html" style="color: inherit;">극동/연해주 독립전쟁</a></h4>
-                    <ul class="menu-list">
-                        <li><a href="#">포시에트</a></li>
-                        <li><a href="#">블라디보스톡</a></li>
-                        <li><a href="#">하바롭스크</a></li>
-                        <li><a href="#">우수리크스</a></li>
-                    </ul>
-
-                    <h4 class="menu-column-title">해외여행</h4> <ul class="menu-list">
-                        <li><a href="#">일본</a></li>
-                        <li><a href="#">몽골</a></li>
-                        <li><a href="#">베트남</a></li>
-                        <li><a href="#">하와이</a></li>
-                    </ul>
-                </div>
-                
-                <div class="menu-column">
-                    <h4 class="menu-column-title">청소년 비전트립</h4>
-                    <ul class="menu-list">
-                        <li><a href="#">국토순례</a></li>
-                        <li><a href="#">역사탐방</a></li>
-                        <li><a href="#">언어연수</a></li>
-                        <li><a href="#">해외교류</a></li>
-                    </ul>
-
-                    <h4 class="menu-column-title">각종 테마기행</h4>
-                    <ul class="menu-list">
-                        <li><a href="#">인물기행</a></li>
-                        <li><a href="#">마을기행</a></li>
-                        <li><a href="#">생태탐방</a></li>
-                        <li><a href="#">환경탐방</a></li>
-                    </ul>
-                </div>
-
-                <div class="menu-column">
-                    <h4 class="menu-column-title">고객센터</h4>
-                    <ul class="menu-list">
-                        <li><a href="#">공지사항</a></li>
-                        <li><a href="#">자주 묻는 질문</a></li>
-                        <li><a href="#">문의하기</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main>
-        <section class="hero-section">
-            <div class="hero-content">
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div>
                 <h1>NAVI TOUR</h1>
                 <p>당신의 다음 비상을 위한 이정표</p>
-            </div>
-        </section>
+      </div>
+    </section>
 
-        <section class="trips-section">
-            <div class="trip-card purple-bg">
-                <!-- ★ 이미지 경로 수정 -->
-                <div class="image-box"><img src="../image/trip1.jpg" alt="서간도의 길"></div>
-                <h2>서간도의 길 </h2>
-                <!-- ★ 링크 경로 수정 -->
-                <a href="../global/China/seogando_bukgando.html" class="btn-discover">DISCOVER MORE</a>
-            </div>
-            <div class="trip-card mint-bg">
-                <!-- ★ 이미지 경로 수정 (러시아어 파일명) -->
-                <div class="image-box"><img src="../image/trip2.jpg" alt="연해주의 길"></div>
-                <h2>연해주의 길</h2>
-                <!-- ★ 링크 경로 수정 -->
-                <a href="../global/Russia/geukdong_yeonhaeju.html" class="btn-discover">DISCOVER MORE</a>
-            </div>
-            <div class="trip-card blue-bg">
-                <!-- ★ 이미지 경로 수정 -->
-                <div class="image-box"><img src="../image/trip3.jpg" alt="해외여행"></div>
-                <h2>해외여행</h2> <a href="#" class="btn-discover">DISCOVER MORE</a>
-            </div>
-        </section>
+    <!-- 콘시어지 배정 서비스 박스 -->
+    <div class="concierge">
+      <i class="fa-solid fa-headset"></i>
+      <div class="txt">
+        <strong>콘시어지 배정 서비스</strong><br>
+        전 일정 1:1 어시스트 · 호텔 업그레이드 상담 · 미식 라인업 커스터마이징
+      </div>
+      <a href="#" class="cta">상담 예약</a>
+    </div>
 
+    <!-- 상품 3열 리스트 -->
+    <section class="grid3" id="list">
+      <!-- ⚠️ 외부 파일(/main/main.products.html)에서 카드가 주입됩니다 -->
+    </section>
+
+    <!-- 하단 맞춤 안내 박스 -->
+    <div class="bottom-box">
+      <span><b>단체·학교·기업 대상</b> 맞춤형 일정 가능합니다. NAVI TOUR와 함께 당신만의 역사기행을 설계해 보세요.</span>
+      <div class="btns">
+        <a href="#" class="ask"><i class="fa-regular fa-comment-dots"></i> 문의하기</a>
+        <a href="#" class="pdf"><i class="fa-regular fa-file-lines"></i> PDF 견적서</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- 우측 여백 고정 필터 -->
+  <aside id="sideFilter" class="side-filter">
+    <h3>상품 필터</h3>
+    <div class="field"><label>지역</label>
+      <select class="sel" id="f-region">
+        <option value="all">전체</option>
+        <option value="seogando">서간도</option>
+        <option value="bukgando">북간도</option>
+      </select>
+    </div>
+    <div class="field"><label>기간</label>
+      <select class="sel" id="f-days">
+        <option value="all">전체</option>
+        <option value="3">3박4일</option>
+        <option value="4">4박5일</option>
+        <option value="5">5박6일</option>
+      </select>
+    </div>
+    <div class="field"><label>키워드</label>
+      <input type="search" class="ipt" id="q" placeholder="예: 윤동주, 봉오동" />
+    </div>
+    <div class="field"><label>테마</label>
+      <div class="chips" id="chips">
+        <div class="chip active" data-theme="all">전체</div>
+        <div class="chip" data-theme="independence">독립운동</div>
+        <div class="chip" data-theme="literature">문학</div>
+        <div class="chip" data-theme="family">가족</div>
+      </div>
+    </div>
+    <button class="btn-apply" id="apply">필터 적용</button>
+  </aside>
+
+  <script>
+    function placeRightFilter(){
+      const mainNav = document.querySelector('.main-nav');
+      const subNav  = document.querySelector('.sub-nav');
+      const header  = document.querySelector('header');
+      const box     = document.getElementById('sideFilter');
+      if(!box) return;
+
+      let headerHeight = ((mainNav && mainNav.offsetHeight) || 0) + ((subNav && subNav.offsetHeight) || 0);
+      if(!headerHeight) headerHeight = (header && header.offsetHeight) || 0;
+
+      const OFFSET = Math.max(5, headerHeight);
+      document.documentElement.style.setProperty('--sticky-offset', OFFSET + 'px');
+      box.style.top = `calc(var(--sticky-offset) + 8px)`;
+    }
+    window.addEventListener('load', placeRightFilter);
+    window.addEventListener('resize', placeRightFilter);
+    window.addEventListener('scroll', placeRightFilter);
+
+    /* ---------- 외부 상품 카드 로딩 + 간단 필터 ---------- */
+    const list      = document.getElementById('list');
+    let cards       = [];
+    const fR        = document.getElementById('f-region');
+    const fD        = document.getElementById('f-days');
+    const q         = document.getElementById('q');
+    const chips     = document.getElementById('chips');
+    const applyBtn  = document.getElementById('apply');
+    let __productsLoaded = false;
+
+    async function loadProducts(){
+      if (__productsLoaded) return;
+      try{
+        // ✅ 경로 수정됨: ../main/main.products.html
+        const res  = await fetch('../main/main.products.html', { cache: 'no-store' });
+        if (!res.ok) throw new Error('main.products.html 로드 실패 ('+res.status+')');
+
+        const html = await res.text();
+        const doc  = new DOMParser().parseFromString(html, 'text/html');
+        const tpl  = doc.getElementById('main-products');
+        if(!tpl){ console.warn('main-products template not found.'); return; }
+
+        list.innerHTML = '';
+        list.appendChild(tpl.content.cloneNode(true));
+
+        cards = Array.from(list.querySelectorAll('.card'));
+        __productsLoaded = true;
+        applyFilter();
+      }catch(e){
+        console.error('Failed to load products:', e);
+        list.innerHTML = `<div style="padding:40px;text-align:center;color:#888;">상품 정보를 불러오지 못했습니다.<br>${e.message}</div>`;
+      }
+    }
+
+    function applyFilter(){
+      const region = fR.value;
+      const days   = fD.value;
+      const theme  = chips.querySelector('.chip.active')?.dataset.theme || 'all';
+      const kw     = q.value.trim().toLowerCase();
+
+      cards.forEach(c=>{
+        const okR = (region==='all' || c.dataset.region===region);
+        const okD = (days==='all'   || c.dataset.days===days);
+        const okT = (theme==='all'  || c.dataset.theme===theme);
+        const okK = !kw || (c.innerText.toLowerCase().includes(kw));
+        c.style.display = (okR && okD && okT && okK) ? '' : 'none';
+      });
+    }
+
+    chips.addEventListener('click', e=>{
+      const chip = e.target.closest('.chip');
+      if(!chip) return;
+      chips.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+      chip.classList.add('active');
+    });
+    applyBtn.addEventListener('click', applyFilter);
+    fR.addEventListener('change', applyFilter);
+    fD.addEventListener('change', applyFilter);
+    q.addEventListener('keydown', e=>{ if(e.key==='Enter') applyFilter(); });
+
+    window.addEventListener('DOMContentLoaded', loadProducts);
+    window.applyFilter = applyFilter;
+    window.cards = cards;
+  </script>
+
+          <!-- ====================== 2-3. 인용문(후기) 섹션 ====================== -->
         <section class="quote-section">
-            <p>"NAVI TOUR는 우리의 꿈을 잊지 못할 현실로 바꾸어 주었습니다."</p> <div class="author-info">
-                <div class="signature">~ 김철수 & 이영희</div> <div class="author-image-placeholder"></div> 
-                <div class="location">대한민국</div> </div>
+            <p>"그 길을 걸으며, 나는 다시 한 번 조국을 사랑하는 법을 배웠다."</p> 
+            <div class="author-info">
+                <div class="signature">윤동주 시인</div> 
+                <div class="author-image-placeholder"></div> 
+                <div class="location">대한민국</div> 
+            </div>
         </section>
     </main>
 
-    <footer>
-        <div class="footer-links">
-            <div class="footer-col">
-                <h4>EXPLORE</h4>
-                <a href="#">여행 상품</a>
-                <a href="#">테마 기행</a>
-            </div>
-            <div class="footer-col">
-                <h4>COMPANY</h4>
-                <a href="#">회사 소개</a>
-                <a href="#">목적지 & 경험</a>
-            </div>
-            <div class="footer-col">
-                <h4>LEGAL</h4>
-                <a href="#">개인정보처리방침</a>
-                <a href="#">이용약관</a>
-            </div>
-            <div class="footer-col">
-                <h4>CONNECT</h4>
-                <a href="#">문의하기</a>
-                <a href="#">고객센터</a>
-                <div class="social-icons">
-                    <i class="fab fa-facebook-f"></i>
-                    <i class="fab fa-twitter"></i>
-                    <i class="fab fa-instagram"></i>
-                </div>
-            </div>
-        </div>
-        <p class="copyright">© 2025 NAVI TOUR. All rights reserved.</p> </footer>
-
-    <script>
-        document.getElementById('all-menu-toggle').addEventListener('click', function() {
-            const allMenuLayer = document.getElementById('all-menu-layer');
-            const subNav = document.querySelector('.sub-nav');
-            
-            allMenuLayer.classList.toggle('active');
-            
-            if (allMenuLayer.classList.contains('active')) {
-                subNav.classList.add('menu-locked');
-            } else {
-                subNav.classList.remove('menu-locked');
-            }
-        });
-
-        // 드롭다운 메뉴 활성화 (마우스 호버)
-        const dropdownItems = document.querySelectorAll('.sub-nav-links .dropdown-item');
-
-        dropdownItems.forEach(item => {
-            item.addEventListener('mouseenter', () => {
-                item.querySelector('.dropdown-content').style.display = 'block';
-            });
-            item.addEventListener('mouseleave', () => {
-                item.querySelector('.dropdown-content').style.display = 'none';
-            });
-        });
-
-        // 전체 메뉴 레이어 외부 클릭 시 닫기
-        document.addEventListener('click', (event) => {
-            const allMenuLayer = document.getElementById('all-menu-layer');
-            const allMenuToggle = document.getElementById('all-menu-toggle');
-            if (!allMenuLayer.contains(event.target) && !allMenuToggle.contains(event.target)) {
-                allMenuLayer.classList.remove('active');
-                document.querySelector('.sub-nav').classList.remove('menu-locked');
-            }
-        });
-    </script>
 </body>
 </html>
