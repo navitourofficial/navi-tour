@@ -1,53 +1,60 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <!-- ✅ layout.html 로더 (헤더/전체메뉴/푸터 자동 포함) -->
-<script>
-  (async function injectLayout() {
-    try {
-      // GitHub Pages면 '/navi-tour' 프리픽스, 로컬(Live Server)이면 빈 문자열
-      const BASE = location.hostname.endsWith('github.io') ? '/navi-tour' : '';
+  <!-- ✅ layout.html 로더 (헤더/전체메뉴/푸터 자동 포함) — GitHub Pages 전용 -->
+  <script>
+    (async function injectLayout() {
+      try {
+        // GitHub Pages 전용: 저장소 이름을 꼭 맞추세요.
+        const BASE = '/navi-tour';
 
-      // 1) layout.html 로드 (절대경로 대신 BASE 접두어 사용)
-      const res  = await fetch(`${BASE}/layout/layout.html`, { cache: 'no-store' });
-      const html = await res.text();
-      const doc  = new DOMParser().parseFromString(html, 'text/html');
+        // 1) layout.html 로드 (절대경로 대신 BASE 사용)
+        const res  = await fetch(`${BASE}/layout/layout.html`, { cache: 'no-store' });
+        const html = await res.text();
+        const doc  = new DOMParser().parseFromString(html, 'text/html');
 
-      // 2) 레이아웃 내부의 절대경로(/로 시작) href/src를 BASE 붙여서 보정
-      const addBase = (url) => (url && url.startsWith('/')) ? `${BASE}${url}` : url;
-      doc.querySelectorAll('[href]').forEach(el => el.setAttribute('href', addBase(el.getAttribute('href'))));
-      doc.querySelectorAll('[src]').forEach(el  => el.setAttribute('src',  addBase(el.getAttribute('src'))));
+        // 2) layout.html 내부의 /로 시작하는 href/src 경로에 BASE 접두어를 붙여서 보정
+        const addBase = (url) => (url && url.startsWith('/')) ? `${BASE}${url}` : url;
+        doc.querySelectorAll('[href]').forEach(el => el.setAttribute('href', addBase(el.getAttribute('href'))));
+        doc.querySelectorAll('[src]').forEach(el  => el.setAttribute('src',  addBase(el.getAttribute('src'))));
 
-      // 3) 헤더/푸터/스크립트 삽입
-      const $headerTpl = doc.getElementById('layout-header');
-      const $footerTpl = doc.getElementById('layout-footer');
-      const $scriptTpl = doc.getElementById('layout-script');
+        // 3) 헤더/푸터/스크립트 삽입
+        const $headerTpl = doc.getElementById('layout-header');
+        const $footerTpl = doc.getElementById('layout-footer');
+        const $scriptTpl = doc.getElementById('layout-script');
 
-      const headerFrag = $headerTpl ? $headerTpl.content.cloneNode(true) : null;
-      const footerFrag = $footerTpl ? $footerTpl.content.cloneNode(true) : null;
+        const headerFrag = $headerTpl ? $headerTpl.content.cloneNode(true) : null;
+        const footerFrag = $footerTpl ? $footerTpl.content.cloneNode(true) : null;
 
-      const main = document.querySelector('main');
-      if (headerFrag) {
-        if (main) document.body.insertBefore(headerFrag, main);
-        else document.body.prepend(headerFrag);
+        const main = document.querySelector('main');
+        if (headerFrag) {
+          if (main) document.body.insertBefore(headerFrag, main);
+          else document.body.prepend(headerFrag);
+        }
+        if (footerFrag) document.body.appendChild(footerFrag);
+
+        if ($scriptTpl) {
+          const inline = $scriptTpl.content.querySelector('script');
+          if (inline) {
+            const s = document.createElement('script');
+            s.textContent = inline.textContent;
+            document.body.appendChild(s);
+          }
+        }
+
+        // 전역으로 BASE를 노출 (아래 제품 로더에서 사용)
+        window.__NAVI_BASE__ = BASE;
+      } catch (e) {
+        console.error('layout include failed:', e);
       }
-      if (footerFrag) document.body.appendChild(footerFrag);
-
-      if ($scriptTpl) {
-        const inline = $scriptTpl.content.querySelector('script');
-        if (inline) document.body.appendChild(inline.cloneNode(true));
-      }
-    } catch (e) {
-      console.error('layout load error', e);
-    }
-  })();
-</script>
-
+    })();
+  </script>
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>서간도/북간도   명품 라인업 | NAVI TOUR</title>
-  <link rel="stylesheet" href="./style.css">
+  <!-- ✅ GitHub에서도 동작하는 상대경로 (현재 파일이 /global/China/* 라고 가정) -->
+  <link rel="stylesheet" href="../../main/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
@@ -153,8 +160,8 @@
     <!-- Hero -->
     <section class="hero">
       <div>
-                <h1>NAVI TOUR</h1>
-                <p>당신의 다음 비상을 위한 이정표</p>
+        <h1>NAVI TOUR</h1>
+        <p>당신의 다음 비상을 위한 이정표</p>
       </div>
     </section>
 
@@ -216,6 +223,7 @@
   </aside>
 
   <script>
+    // 헤더 높이에 맞춰 우측 필터 상단 위치 보정
     function placeRightFilter(){
       const mainNav = document.querySelector('.main-nav');
       const subNav  = document.querySelector('.sub-nav');
@@ -247,8 +255,9 @@
     async function loadProducts(){
       if (__productsLoaded) return;
       try{
-        // ✅ 경로 수정됨: ../main/main.products.html
-        const res  = await fetch('../main/main.products.html', { cache: 'no-store' });
+        // ✅ GitHub Pages 전용: BASE 접두어 사용
+        const BASE = (window.__NAVI_BASE__ || '/navi-tour');
+        const res  = await fetch(`${BASE}/main/main.products.html`, { cache: 'no-store' });
         if (!res.ok) throw new Error('main.products.html 로드 실패 ('+res.status+')');
 
         const html = await res.text();
@@ -299,17 +308,14 @@
     window.cards = cards;
   </script>
 
-          <!-- ====================== 2-3. 인용문(후기) 섹션 ====================== -->
-        <section class="quote-section">
-            <p>"그 길을 걸으며, 나는 다시 한 번 조국을 사랑하는 법을 배웠다."</p> 
-            <div class="author-info">
-                <div class="signature">윤동주 시인</div> 
-                <div class="author-image-placeholder"></div> 
-                <div class="location">대한민국</div> 
-            </div>
-        </section>
-    </main>
-
+  <!-- ====================== 2-3. 인용문(후기) 섹션 ====================== -->
+  <section class="quote-section">
+    <p>"그 길을 걸으며, 나는 다시 한 번 조국을 사랑하는 법을 배웠다."</p>
+    <div class="author-info">
+      <div class="signature">윤동주 시인</div>
+      <div class="author-image-placeholder"></div>
+      <div class="location">대한민국</div>
+    </div>
+  </section>
 </body>
 </html>
-
