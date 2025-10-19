@@ -120,32 +120,28 @@
             /* padding-right: 280px;  <-- 삭제: 본문을 가운데 유지 */
         }
 
-        /* ----------------------- Page Hero Section ----------------------- */
-        .page-hero-section {
-            height: 40vh; /* 메인보다 조금 높은 높이로 설정 */
-            background:
-        /* 어두운 반투명 오버레이 (원하지 않으면 제거 가능) */
-        linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
-        /* ✅ 새 배너 이미지 경로로 교체 */
-        url('image/banner_seogando.png') center/cover no-repeat;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
+        /* ----------------------- Hero (좌측 정렬 + 좌측 그라디언트로 교체) ----------------------- */
+        .hero{
+          border-radius:18px;overflow:hidden;min-height:340px;color:#fff;
+          background:
+            linear-gradient(90deg, rgba(0,0,0,.65) 0%, rgba(0,0,0,.35) 40%, rgba(0,0,0,0) 70%),
+            url('image/banner_seogando.png') center/cover no-repeat;
+          display:flex;align-items:center;justify-content:flex-start;box-shadow:0 12px 28px rgba(0,0,0,.08);
+          margin-bottom:40px;
         }
-        .page-hero-section h1 {
-            font-family: 'Playfair Display', serif; /* 메인 타이틀 폰트 유지 */
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        .hero h1{
+          font-family:'Playfair Display',serif;
+          font-size:2.8rem;margin:0 0 6px;
         }
-        .page-hero-section p {
-            font-size: 1.2rem;
-            margin-top: 10px;
+        .hero p{margin:0;opacity:.9}
+
+        /* ✅ 추가: 좌측 정렬 패딩 래퍼 + 텍스트 그림자 */
+        .hero > div{ text-align:left; padding:clamp(20px,6vw,56px); max-width:720px; }
+        .hero h1,
+        .hero p{
+          text-shadow:
+            0 0 1px rgba(0,0,0,.75),
+            0 2px 8px rgba(0,0,0,.55);
         }
     </style>
 </head>
@@ -153,10 +149,10 @@
 
     <main>
         <!-- ----------------------- 1. 페이지 히어로 섹션 ----------------------- -->
-        <section class="page-hero-section">
-            <div class="hero-content">
+        <section class="hero">
+            <div>
                 <h1>서간도</h1>
-                <p>가장 치열했던 독립의 발자취, 만주벌판에서 뜨거운 역사를 만나다.</p>
+                <p>가장 치열했던 독립의 발자취,<br> 만주벌판에서 뜨거운 역사를 만나다.</p>
             </div>
         </section>
 
@@ -217,8 +213,7 @@
             <h3 class="subsection-title">왜 서간도인가?<h3></h3
             <p>
                 <strong>서간도</strong>는 요동반도와 압록강 북쪽 일대, 오늘날의 중국 랴오닝성(요녕성)과 지린성
-            (길림성)의 백두산 서부지역을 말합니다. 이 지역은 우리 역사에서 고조선, 부여,
-            고구려, 발해의 강역이기도 합니다. 특히 이 지역은 고구려문화유산이 집중되어 있는 곳입니다.
+            (길림성)의 백두산 서부지역을 말합니다. 이 지역은 우리 역사에서 고구려, 발해의 강역이기도 합니다. 특히 이 지역은 고구려문화유산이 집중되어 있는 곳입니다.
 
             서간도는 ‘지붕 없는 고구려 박물관’입니다.
 고구려는 700년을 이어온 세계사에 빛나는 문화강국이었습니다. 정치·경제·군사
@@ -323,11 +318,7 @@
                 <a href="#" class="btn-primary" style="padding: 15px 40px; font-size: 1.2rem;">맞춤 일정 상담 신청하기</a>
             </div>
 
-            <h3 class="subsection-title">가격표 & 일정표 다운로드</h3>
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="#" class="btn-primary" style="background-color: #5cb85c; margin-right: 10px;">PDF 가격표 다운로드 <i class="fas fa-file-pdf"></i></a>
-                <a href="#" class="btn-primary" style="background-color: #5cb85c;">PDF 일정표 다운로드 <i class="fas fa-file-pdf"></i></a>
-            </div>
+
         </section>
 
         <!-- Section 3: 역사·답사·자료관 -->
