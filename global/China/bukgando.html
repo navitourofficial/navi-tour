@@ -120,43 +120,50 @@
             /* padding-right: 280px;  <-- 삭제: 본문을 가운데 유지 */
         }
 
-        /* ----------------------- Page Hero Section ----------------------- */
-        .page-hero-section {
-            height: 40vh; /* 메인보다 조금 높은 높이로 설정 */
-            background:
-        /* 어두운 반투명 오버레이 (원하지 않으면 제거 가능) */
-        linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
-        /* ✅ 새 배너 이미지 경로로 교체 */
-        url('image/banner_seogando.png') center/cover no-repeat;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
+        /* ----------------------- Hero (요청한 위 스타일로 교체) ----------------------- */
+        .hero{
+          border-radius:18px;overflow:hidden;min-height:340px;color:#fff;
+          background:
+            linear-gradient(90deg, rgba(0,0,0,.65) 0%, rgba(0,0,0,.35) 40%, rgba(0,0,0,0) 70%),
+            url('image/banner_bukgando.png') center/cover no-repeat;
+          display:flex;align-items:center;justify-content:flex-start;box-shadow:0 12px 28px rgba(0,0,0,.08);
+          margin-bottom:40px;
         }
-        .page-hero-section h1 {
-            font-family: 'Playfair Display', serif; /* 메인 타이틀 폰트 유지 */
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: 2px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        .hero > div{ text-align:left; padding:clamp(20px,6vw,56px); max-width:720px; }
+        .hero h1{
+          font-family:'Playfair Display',serif;
+          font-size:2.8rem;margin:0 0 6px;
         }
-        .page-hero-section p {
-            font-size: 1.2rem;
-            margin-top: 10px;
-        }
+        .hero p{margin:0;opacity:.9}
+        /* 히어로 텍스트 가독성 업(그림자) */
+.hero h1,
+.hero p{
+  /* 얇은 외곽선 + 부드러운 번짐 2중 레이어 */
+  text-shadow:
+    0 0 1px rgba(0,0,0,.75),      /* 아주 얇은 테두리 느낌 */
+    0 2px 8px rgba(0,0,0,.55);    /* 소프트 글로우 */
+}
+
+/* 필요하면 모바일에서 좀 더 진하게 (선택) */
+@media (max-width: 640px){
+  .hero h1,
+  .hero p{
+    text-shadow:
+      0 0 1px rgba(0,0,0,.85),
+      0 3px 10px rgba(0,0,0,.65);
+  }
+}
+
     </style>
 </head>
 <body>
 
     <main>
         <!-- ----------------------- 1. 페이지 히어로 섹션 ----------------------- -->
-        <section class="page-hero-section">
-            <div class="hero-content">
-                <h1>북간도
-                <p>가장 치열했던 독립의 발자취, 만주벌판에서 뜨거운 역사를 만나다.</p>
+        <section class="hero">
+            <div>
+                <h1>북간도</h1>
+                <p>두만강을 건너 세운 희망,<br>북간도에서 독립의 불씨가 타오르다.</p>
             </div>
         </section>
 
@@ -176,34 +183,33 @@
         
         <div class="recommendation-card">
             <blockquote>
-                역사를 잊은 민족에게 미래는 없습니다. 서간도 답사는 우리 민족의 피와 땀이 깃든 독립운동의 성지를 직접 밟으며, 현재의 대한민국을 있게 한 숭고한 정신을 되새기는 최고의 기회입니다. 후세 교육을 위해 강력하게 추천합니다.
+                 북간도는 단순한 이주지가 아니라, 민족의 혼이 깃든 교육과 신앙의 요람이었습니다. 명동학교와 용정촌을 거닐며, 조국 독립을 위해 자신을 바친 선조들의 뜨거운 이상을 다시금 깨닫게 됩니다.
             </blockquote>
             
             <div class="recommendation-footer">
-                <div class="author">김철수 박사</div>
-                <div class="title">독립운동사 연구소 소장</div>
+                <div class="author">정은석 박사</div>
+                <div class="title">민족교육사 연구자</div>
             </div>
         </div>
 
         <div class="recommendation-card">
             <blockquote>
-                교과서에서만 보던 만주벌판의 기상을 직접 느끼고, 애국지사들의 삶의 터전을 눈으로 확인하는 것은 어떤 강의보다 강력한 역사 교육이 될 것입니다. 청소년과 대학생들에게 이보다 값진 경험은 없다고 확신합니다.
+                 윤동주의 시가 태어난 그 땅, 북간도는 문학과 신앙, 그리고 항일정신이 하나였던 공간입니다. 그 시대 청년들의 고뇌와 순수를 현장에서 느끼는 것은 어떤 교재보다도 깊은 울림을 줍니다. 학생들과 교사 모두에게 강력히 추천합니다.
             </blockquote>
             
             <div class="recommendation-footer">
-                <div class="author">이영희 교수</div>
-                <div class="title">한국사 교육 전공</div>
+                <div class="author">한지연 교수</div>
+                <div class="title">문학교육 전공</div>
             </div>
         </div>
 
         <div class="recommendation-card">
             <blockquote>
-                백두산 천지의 웅장함과 압록강의 물결 속에서 선조들의 고난과 의지를 읽어냅니다. 단순한 여행이 아닌, 자아와 민족의 정체성을 재발견하는 감동적인 순례길이었습니다. 모든 국민이 꼭 한 번 가봐야 할 곳입니다.
-            </blockquote>
+                차디찬 만주벌판에서도 불타오르던 민족의 정신, 그 중심이 바로 북간도였습니다. 교회와 학교, 신문사를 세워 희망을 전했던 사람들의 숨결이 아직도 남아 있습니다. 오늘의 대한민국이 어디서 시작되었는지를 체험하게 되는 감동의 여정이었습니다.
             
             <div class="recommendation-footer">
-                <div class="author">박민재 시인</div>
-                <div class="title">한국 문학 협회 이사</div>
+                <div class="author">박성훈 목사</div>
+                <div class="title">역사문화기행 해설가</div>
             </div>
         </div>
 
@@ -251,43 +257,29 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>압록강을 거슬러 백두산, 두만강까지
+                        <td>백두산에서 두만강 해란강 거쳐 하얼빈까지
                         <td>6박 7일</td>
                         <td>189만원 ~</td>
                         <td>핵심 유적</td>
                         <td><a href="#">일정표</a></td>
                     </tr>
                     <tr>
-                        <td>요동을 지나 압록강을 거슬러 백두산까지
-                        <td>5박 6일</td>
-                        <td>159만원 ~</td>
+                        <td>백두산에서 두만강 해란강 거쳐 훈춘 방천까지
+                        <td>6박 7일</td>
+                        <td>189만원 ~</td>
                         <td>역사 심화</td>
                         <td><a href="#">일정표</a></td>
                     </tr>
                     <tr>
-                        <td>광활한 대륙에 펼쳐진 고구려 문화유산 집중 탐사
-                        <td>5박 6일</td>
-                        <td>159만원 ~</td>
+                        <td>북간도 독립전쟁의 별들을 찾아서
+                        <td>7박 8일</td>
+                        <td>219만원 ~</td>
                         <td>문학/탐방</td>
                         <td><a href="#">일정표</a></td>
                     </tr>
-                     <tr>
-                        <td>서간도 독립전쟁의 별들을 찾아서
-                        <td>5박 6일</td>
-                        <td>159만원 ~</td>
-                        <td>문학/탐방</td>
-                        <td><a href="#">일정표</a></td>
-                    </tr>
-                                       </tr>
-                                       <tr>
-                        <td>백두산과 압록강 두만강 상류 집중 탐사
-                        <td>5박 6일</td>
-                        <td>159만원 ~</td>
-                        <td>문학/탐방</td>
-                        <td><a href="#">일정표</a></td>
-                    </tr>
-                                       </tr>
-                                       <tr>
+
+                     </tr>
+                      <tr>
                         <td>맞춤형 테마 기행, 단체 연수, 역사 캠프 진행
                         <td>일정협의
                         <td>일정협의
@@ -309,11 +301,7 @@
                 <a href="#" class="btn-primary" style="padding: 15px 40px; font-size: 1.2rem;">맞춤 일정 상담 신청하기</a>
             </div>
 
-            <h3 class="subsection-title">가격표 & 일정표 다운로드</h3>
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="#" class="btn-primary" style="background-color: #5cb85c; margin-right: 10px;">PDF 가격표 다운로드 <i class="fas fa-file-pdf"></i></a>
-                <a href="#" class="btn-primary" style="background-color: #5cb85c;">PDF 일정표 다운로드 <i class="fas fa-file-pdf"></i></a>
-            </div>
+
         </section>
 
         <!-- Section 3: 역사·답사·자료관 -->
@@ -332,69 +320,70 @@
                 </div>
             </div>
 
-            <div class="site-card">
-                <img src="image/bukgando_card/bukgando_card2.png" alt="윤동주 생가">
-                <div class="site-card-body">
-                    <h5>장백폭포</h5>
-                    <p>수천 년 세월이 빚어낸 거대한 지각의 상흔. 백두산의 기운을 담아 깊숙이 파인 협곡은, 간도 지역에 뿌리내린 선조들의 강인한 삶과 문학적 영감을 고스란히 품고 있습니다.
-                </div>
-            </div>
+<div class="site-card">
+  <img src="image/bukgando_card/bukgando_card2.png" alt="윤동주 생가">
+  <div class="site-card-body">
+    <h5>장백폭포</h5>
+    <p>백두산에서 흘러내린 물줄기가 단단한 절벽을 타고 떨어지는 장엄한 폭포. 신화와 설화가 깃든 이곳은, 예로부터 민족의 영산으로 향하는 성스러운 관문이자 북간도의 숨결을 상징합니다.</p>
+  </div>
+</div>
 
-            <div class="site-card">
-                <img src="image/bukgando_card/bukgando_card3.png" alt="청산리 전투 현장">
-                <div class="site-card-body">
-                    <h5>비암산</h5>
-                    <p>망명과 귀환, 비밀과 희망이 교차했던 압록강 위의 강철 통로. 조국을 떠난 독립투사들이 자유를 향해 건너던 다리이자, 대륙 깊숙이 독립의 의지를 전파하던 생명선이었습니다.
-                </div>
-            </div>
+<div class="site-card">
+  <img src="image/bukgando_card/bukgando_card3.png" alt="청산리 전투 현장">
+  <div class="site-card-body">
+    <h5>비암산</h5>
+    <p>깎아지른 절벽 사이로 안개가 피어오르는 비암산은 청산리 전투의 숨결이 살아 숨 쉬는 곳. 굳건한 바위처럼 독립군의 의지 또한 결코 꺾이지 않았습니다.</p>
+  </div>
+</div>
 
-            <div class="site-card">
-                <img src="image/bukgando_card/bukgandocard4.png" alt="이상룡 생가">
-                <div class="site-card-body">
-                    <h5>서전서숙</h5>
-                    <p>고구려 제19대 왕 광개토태왕의 업적을 기록한 거대한 비석. 한민족의 드높은 기상을 느낄 수 있는 역사 유적.
-                </div>
-            </div>
+<div class="site-card">
+  <img src="image/bukgando_card/bukgando_card4.png" alt="이상룡 생가">
+  <div class="site-card-body">
+    <h5>두만강 국경</h5>
+    <p>조국을 떠나던 이들이 눈물로 건넜던 두만강. 얼어붙은 강물 위에도 꺼지지 않았던 독립의 불씨가, 지금도 그 강바람 속에 서려 있습니다.</p>
+  </div>
+</div>
 
-            <div class="site-card">
-                <img src="image/bukgando_card/bukgando_card5.png" alt="명동학교 터">
-                <div class="site-card-body">
-                    <h5>명동학교</h5>
-                    <p>고구려 제20대 왕 장수왕의 능. 광개토태왕릉비와 함께 고구려의 강력한 위용을 보여줍니다.
-                </div>
-            </div>
+<div class="site-card">
+  <img src="image/bukgando_card/bukgando_card5.png" alt="명동학교 터">
+  <div class="site-card-body">
+    <h5>명동학교</h5>
+    <p>민족의 미래를 위해 세워진 배움의 터전. 독립운동가들이 교육을 무기로 조국의 내일을 길러냈던 북간도의 지성의 요람입니다.</p>
+  </div>
+</div>
 
-            <div class="site-card">
-                <img src="image/bukgando_card/bukgando_card6.png" alt="봉오동 전투 기념비">
-                <div class="site-card-body">
-                    <h5>하얼빈역</h5>
-                    <p>독립운동의 인재를 양성하기 위해 세워진 학교 터. 교육을 통해 독립 정신을 계승했던 중요한 유적지.
-                </div>
-            </div>
+<div class="site-card">
+  <img src="image/bukgando_card/bukgando_card6.png" alt="봉오동 전투 기념비">
+  <div class="site-card-body">
+    <h5>하얼빈역</h5>
+    <p>안중근 의사가 이토 히로부미를 저격한 역사적 장소. 한 발의 총성이 제국의 오만을 깨뜨리고, 온 겨레의 독립 의지를 일깨웠던 순간이 이곳에 서려 있습니다.</p>
+  </div>
+</div>
 
-            <div class="site-card">
-                <img src="image/bukgando_card/bukgando_card7.png" alt="용정 서전서숙 터">
-                <div class="site-card-body">
-                    <h5>청산리대첩비</h5>
-                    <p>안중근 의사가 수감되었던 감옥. 일제강점기 독립운동가들이 고초를 겪었던 역사의 아픈 현장.
-                </div>
-            </div>
+<div class="site-card">
+  <img src="image/bukgando_card/bukgando_card7.png" alt="용정 서전서숙 터">
+  <div class="site-card-body">
+    <h5>청산리대첩비</h5>
+    <p>1920년, 김좌진 장군과 북로군정서가 일본 정규군을 꺾은 대승의 현장. 청산리의 산새와 바람은 여전히 그날의 함성을 전하고 있습니다.</p>
+  </div>
+</div>
 
-            <div class="site-card">
-                <img src="image/bukgando_card/bukgando_card8.png" alt="백두산 천지">
-                <div class="site-card-body">
-                    <h5>봉오동대첩비</h5>
-                    <p>압록강을 통해 물자를 조달하거나 독립군 이동을 감시하기 위해 일제가 세운 경찰서 터.
-                </div>
-            </div>
+<div class="site-card">
+  <img src="image/bukgando_card/bukgando_card8.png" alt="백두산 천지">
+  <div class="site-card-body">
+    <h5>중앙대가(러시아거리)</h5>
+    <p>러시아 문화와 동양의 정서가 교차하는 하얼빈의 중심 거리. 수많은 독립운동가들이 이곳에서 조국의 소식을 전하고 새로운 길을 모색했습니다.</p>
+  </div>
+</div>
 
-            <div class="site-card">
-                <img src="image/bukgando_card/bukgando_card9.png" alt="삼원포 독립운동 기념관">
-                <div class="site-card-body">
-                    <h5>하얼빈 성 소피아 성당</h5>
-                    <p>대한민국 임시정부의 국내외 비밀 통신 연락망을 담당했던 핵심 기관. 독립운동의 정보망 거점.
-                </div>
-            </div>
+<div class="site-card">
+  <img src="image/bukgando_card/bukgando_card9.png" alt="삼원포 독립운동 기념관">
+  <div class="site-card-body">
+    <h5>하얼빈 성 소피아 성당</h5>
+    <p>러시아 정교의 화려한 돔 아래, 망명지 하얼빈의 문화와 신앙이 공존했던 공간. 전쟁과 이주의 세월 속에서도 인간의 예술혼이 빛나던 곳입니다.</p>
+  </div>
+</div>
+
         </div>
     </section>
     
