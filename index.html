@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <!-- ✅ GitHub Pages용 동적 BASE 설정 -->
-  <script>
-    (function () {
-      const seg = location.pathname.split('/').filter(Boolean);
-      const base = (location.hostname.endsWith('.github.io') && seg.length > 0)
-        ? '/' + seg[0] + '/'   // 프로젝트 페이지: "/repo/"
-        : '/';                 // 로컬/사용자페이지: "/"
-      const b = document.createElement('base');
-      b.setAttribute('href', base);
-      document.head.prepend(b);
-    })();
-  </script>
+<script>
+(function () {
+  const seg = location.pathname.split('/').filter(Boolean);
+  const isGithub = location.hostname.endsWith('.github.io');
+  const repo = isGithub ? (seg[0] || '') : '';
+
+  // ✅ 루트 경로를 항상 repo 루트까지만 설정
+  const base = isGithub && repo ? '/' + repo + '/' : '/';
+  const b = document.createElement('base');
+  b.setAttribute('href', base);
+  document.head.prepend(b);
+})();
+</script>
+
 
   <!-- ✅ layout.html 로더 (헤더/전체메뉴/푸터 자동 포함) -->
   <script>
@@ -320,3 +322,4 @@
 
 </body>
 </html>
+
