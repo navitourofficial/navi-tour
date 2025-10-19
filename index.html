@@ -2,26 +2,17 @@
 <html lang="ko">
 <head>
   <!-- ✅ GitHub Pages용 동적 BASE 설정 -->
-<script>
-    (function () {
-      const seg = location.pathname.split('/').filter(Boolean);
-      const isGithub = location.hostname.endsWith('.github.io');
-      
-      // [1] base 경로 계산 (기존 로직 유지)
-      const base = (isGithub && seg.length > 0)
-        ? '/' + seg[0] + '/'   // 프로젝트 페이지: "/repo/"
-        : '/';                 // 로컬/사용자페이지: "/"
-        
-      // [2] base 태그 삽입 (기존 로직 유지)
-      const b = document.createElement('base');
-      b.setAttribute('href', base);
-      document.head.prepend(b);
-      
-      // 🚀 [3] 추가: 계산된 base 경로를 body 데이터셋에 저장
-      // (다른 스크립트에서 fetch 경로를 만들 때 사용하기 위함)
-      document.body.dataset.basePath = base;
-    })();
-  </script>
+  <script>
+    (function () {
+      const seg = location.pathname.split('/').filter(Boolean);
+      const base = (location.hostname.endsWith('.github.io') && seg.length > 0)
+        ? '/' + seg[0] + '/'   // 프로젝트 페이지: "/repo/"
+        : '/';                 // 로컬/사용자페이지: "/"
+      const b = document.createElement('base');
+      b.setAttribute('href', base);
+      document.head.prepend(b);
+    })();
+  </script>
 
   <!-- ✅ layout.html 로더 (헤더/전체메뉴/푸터 자동 포함) -->
   <script>
@@ -61,7 +52,7 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>서간도/북간도   명품 라인업 | NAVI TOUR</title>
+  <title>NAVI TOUR</title>
  <link rel="stylesheet" href="main/style.css">
 
 
@@ -83,7 +74,7 @@
 
     /* Hero */
     .hero{border-radius:18px;overflow:hidden;min-height:340px;color:#fff;
-      background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.35)),url('image/banner_seogando.png') center/cover no-repeat;
+      background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,.35)),url('image/bukgando_card/banner_bukgando.png') center/cover no-repeat;
       display:grid;place-items:center;text-align:center;box-shadow:var(--shadow);}
     .hero h1{font-family:'Playfair Display',serif;font-size:2.8rem;margin:0 0 6px;}
     .hero p{margin:0;opacity:.9}
