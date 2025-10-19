@@ -55,7 +55,7 @@
 <script>
 (async()=>{
   try {
-    const res = await fetch('/layout/global_layout.html',{cache:'no-store'});
+    const res = await fetch('layout/global_layout.html',{cache:'no-store'});
     const html = await res.text();
     const doc = new DOMParser().parseFromString(html,'text/html');
     const styleTpl  = doc.getElementById('global-layout-style');
