@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+
+      <script>
+    (function () {
+      const seg = location.pathname.split('/').filter(Boolean);
+      const base = (location.hostname.endsWith('.github.io') && seg.length > 0)
+        ? '/' + seg[0] + '/'   // 프로젝트 페이지: "/repo/"
+        : '/';                 // 로컬/사용자페이지: "/"
+      const b = document.createElement('base');
+      b.setAttribute('href', base);
+      document.head.prepend(b);
+    })();
+  </script>
+
     <!-- ✅ layout.html 로더 스니펫 (공통 헤더/푸터/드롭메뉴 자동 포함) -->
     <script>
       (async function injectLayout() {
         try {
-          const res = await fetch('/layout/layout.html', { cache: 'no-store' });
+          const res = await fetch('layout/layout.html', { cache: 'no-store' });
           const html = await res.text();
           const doc  = new DOMParser().parseFromString(html, 'text/html');
 
@@ -73,7 +86,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>서간도 | NAVI TOUR</title>
-    <link rel="stylesheet" href="../../main/style.css">
+    <link rel="stylesheet" href="main/style.css">
     <!-- Noto Sans KR 폰트로 통일하여 가독성 높임 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -114,7 +127,7 @@
         /* 어두운 반투명 오버레이 (원하지 않으면 제거 가능) */
         linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)),
         /* ✅ 새 배너 이미지 경로로 교체 */
-        url('../../image/banner_seogando.png') center/cover no-repeat;
+        url('image/banner_seogando.png') center/cover no-repeat;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -326,7 +339,7 @@
         <!-- ✅ 수정된 부분: 카드들을 historic-site-grid로 감쌈 -->
         <div class="historic-site-grid">
             <div class="site-card">
-                <img src="../../image/seogando_card1.png" alt="신흥무관학교 터">
+                <img src="image/seogando_card1.png" alt="신흥무관학교 터">
                 <div class="site-card-body">
                     <h5>백두산 천지</h5>
                     <p>하늘과 땅을 잇는 민족의 영산, 그 정점에 빛나는 신비로운 호수.</p>
@@ -334,7 +347,7 @@
             </div>
 
             <div class="site-card">
-                <img src="../../image/seogando_card2.png" alt="윤동주 생가">
+                <img src="image/seogando_card2.png" alt="윤동주 생가">
                 <div class="site-card-body">
                     <h5>금강대협곡</h5>
                     <p>수천 년 세월이 빚어낸 거대한 지각의 상흔. 백두산의 기운을 담아 깊숙이 파인 협곡은, 간도 지역에 뿌리내린 선조들의 강인한 삶과 문학적 영감을 고스란히 품고 있습니다.
@@ -342,7 +355,7 @@
             </div>
 
             <div class="site-card">
-                <img src="../../image/seogando_card3.png" alt="청산리 전투 현장">
+                <img src="image/seogando_card3.png" alt="청산리 전투 현장">
                 <div class="site-card-body">
                     <h5>신압록강교</h5>
                     <p>망명과 귀환, 비밀과 희망이 교차했던 압록강 위의 강철 통로. 조국을 떠난 독립투사들이 자유를 향해 건너던 다리이자, 대륙 깊숙이 독립의 의지를 전파하던 생명선이었습니다.
@@ -350,7 +363,7 @@
             </div>
 
             <div class="site-card">
-                <img src="../../image/seogando_card4.png" alt="이상룡 생가">
+                <img src="image/seogando_card4.png" alt="이상룡 생가">
                 <div class="site-card-body">
                     <h5>광개토태왕릉비</h5>
                     <p>고구려 제19대 왕 광개토태왕의 업적을 기록한 거대한 비석. 한민족의 드높은 기상을 느낄 수 있는 역사 유적.
@@ -358,7 +371,7 @@
             </div>
 
             <div class="site-card">
-                <img src="../../image/seogando_card5.png" alt="명동학교 터">
+                <img src="image/seogando_card5.png" alt="명동학교 터">
                 <div class="site-card-body">
                     <h5>장수왕릉</h5>
                     <p>고구려 제20대 왕 장수왕의 능. 광개토태왕릉비와 함께 고구려의 강력한 위용을 보여줍니다.
@@ -366,7 +379,7 @@
             </div>
 
             <div class="site-card">
-                <img src="../../image/seogando_card6.png" alt="봉오동 전투 기념비">
+                <img src="image/seogando_card6.png" alt="봉오동 전투 기념비">
                 <div class="site-card-body">
                     <h5>노학당터</h5>
                     <p>독립운동의 인재를 양성하기 위해 세워진 학교 터. 교육을 통해 독립 정신을 계승했던 중요한 유적지.
@@ -374,7 +387,7 @@
             </div>
 
             <div class="site-card">
-                <img src="../../image/seogando_card7.png" alt="용정 서전서숙 터">
+                <img src="image/seogando_card7.png" alt="용정 서전서숙 터">
                 <div class="site-card-body">
                     <h5>뤼순감옥</h5>
                     <p>안중근 의사가 수감되었던 감옥. 일제강점기 독립운동가들이 고초를 겪었던 역사의 아픈 현장.
@@ -382,7 +395,7 @@
             </div>
 
             <div class="site-card">
-                <img src="../../image/seogando_card8.png" alt="백두산 천지">
+                <img src="image/seogando_card8.png" alt="백두산 천지">
                 <div class="site-card-body">
                     <h5>수상경찰서</h5>
                     <p>압록강을 통해 물자를 조달하거나 독립군 이동을 감시하기 위해 일제가 세운 경찰서 터.
@@ -390,7 +403,7 @@
             </div>
 
             <div class="site-card">
-                <img src="../../image/seogando_card9.png" alt="삼원포 독립운동 기념관">
+                <img src="image/seogando_card9.png" alt="삼원포 독립운동 기념관">
                 <div class="site-card-body">
                     <h5>임시정부 교통국</h5>
                     <p>대한민국 임시정부의 국내외 비밀 통신 연락망을 담당했던 핵심 기관. 독립운동의 정보망 거점.
