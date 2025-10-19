@@ -1,24 +1,14 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <!-- ✅ layout.html 로더 (헤더/전체메뉴/푸터 자동 포함) — GitHub Pages 대응 -->
+  <!-- ✅ layout.html 로더 (헤더/전체메뉴/푸터 자동 포함) -->
   <script>
     (async function injectLayout() {
       try {
-        // 깃허브 Pages 저장소 이름에 맞게 수정하세요.
-        const BASE = location.hostname.endsWith('github.io') ? '/navi-tour' : '';
-
-        // 1) layout.html 로드
-        const res  = await fetch(`${BASE}/layout/layout.html`, { cache: 'no-store' });
+        const res = await fetch('/layout/layout.html', { cache: 'no-store' });
         const html = await res.text();
         const doc  = new DOMParser().parseFromString(html, 'text/html');
 
-        // 2) 레이아웃 내부의 절대경로(/…) href/src를 BASE로 보정
-        const addBase = (url) => (url && url.startsWith('/')) ? `${BASE}${url}` : url;
-        doc.querySelectorAll('[href]').forEach(el => el.setAttribute('href', addBase(el.getAttribute('href'))));
-        doc.querySelectorAll('[src]').forEach(el  => el.setAttribute('src',  addBase(el.getAttribute('src'))));
-
-        // 3) 헤더/푸터/스크립트 삽입
         const $headerTpl = doc.getElementById('layout-header');
         const $footerTpl = doc.getElementById('layout-footer');
         const $scriptTpl = doc.getElementById('layout-script');
@@ -41,9 +31,6 @@
             document.body.appendChild(s);
           }
         }
-
-        // 전역 BASE 노출 (다른 fetch에서도 사용)
-        window.__NAVI_BASE__ = BASE;
       } catch (e) {
         console.error('layout include failed:', e);
       }
@@ -159,8 +146,8 @@
     <!-- Hero -->
     <section class="hero">
       <div>
-        <h1>NAVI TOUR</h1>
-        <p>당신의 다음 비상을 위한 이정표</p>
+                <h1>NAVI TOUR</h1>
+                <p>당신의 다음 비상을 위한 이정표</p>
       </div>
     </section>
 
@@ -187,16 +174,6 @@
         <a href="#" class="pdf"><i class="fa-regular fa-file-lines"></i> PDF 견적서</a>
       </div>
     </div>
-
-    <!-- ====================== 2-3. 인용문(후기) 섹션 ====================== -->
-    <section class="quote-section">
-      <p>"그 길을 걸으며, 나는 다시 한 번 조국을 사랑하는 법을 배웠다."</p> 
-      <div class="author-info">
-        <div class="signature">윤동주 시인</div> 
-        <div class="author-image-placeholder"></div> 
-        <div class="location">대한민국</div> 
-      </div>
-    </section>
   </main>
 
   <!-- 우측 여백 고정 필터 -->
@@ -263,18 +240,12 @@
     async function loadProducts(){
       if (__productsLoaded) return;
       try{
-        const BASE = (window.__NAVI_BASE__ || (location.hostname.endsWith('github.io') ? '/navi-tour' : ''));
-        const res  = await fetch(`${BASE}/main/main.products.html`, { cache: 'no-store' });
+        // ✅ 경로 수정됨: ../main/main.products.html
+        const res  = await fetch('../main/main.products.html', { cache: 'no-store' });
         if (!res.ok) throw new Error('main.products.html 로드 실패 ('+res.status+')');
 
         const html = await res.text();
         const doc  = new DOMParser().parseFromString(html, 'text/html');
-
-        // ✅ 템플릿 내부의 절대경로(/…) 보정
-        const addBase = (url) => (url && url.startsWith('/')) ? `${BASE}${url}` : url;
-        doc.querySelectorAll('[src]').forEach(el  => el.setAttribute('src',  addBase(el.getAttribute('src'))));
-        doc.querySelectorAll('[href]').forEach(el => el.setAttribute('href', addBase(el.getAttribute('href'))));
-
         const tpl  = doc.getElementById('main-products');
         if(!tpl){ console.warn('main-products template not found.'); return; }
 
@@ -320,5 +291,17 @@
     window.applyFilter = applyFilter;
     window.cards = cards;
   </script>
+
+          <!-- ====================== 2-3. 인용문(후기) 섹션 ====================== -->
+        <section class="quote-section">
+            <p>"그 길을 걸으며, 나는 다시 한 번 조국을 사랑하는 법을 배웠다."</p> 
+            <div class="author-info">
+                <div class="signature">윤동주 시인</div> 
+                <div class="author-image-placeholder"></div> 
+                <div class="location">대한민국</div> 
+            </div>
+        </section>
+    </main>
+
 </body>
 </html>
