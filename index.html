@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <!-- ✅ GitHub Pages용 동적 BASE 설정 -->
 <script>
-(function () {
-  const seg = location.pathname.split('/').filter(Boolean);
-  const isGithub = location.hostname.endsWith('.github.io');
-  const repo = isGithub ? (seg[0] || '') : '';
-
-  // ✅ 루트 경로를 항상 repo 루트까지만 설정
-  const base = isGithub && repo ? '/' + repo + '/' : '/';
-  const b = document.createElement('base');
-  b.setAttribute('href', base);
-  document.head.prepend(b);
-})();
-</script>
-
+    (function () {
+      const seg = location.pathname.split('/').filter(Boolean);
+      const isGithub = location.hostname.endsWith('.github.io');
+      
+      // [1] base 경로 계산 (기존 로직 유지)
+      const base = (isGithub && seg.length > 0)
+        ? '/' + seg[0] + '/'   // 프로젝트 페이지: "/repo/"
+        : '/';                 // 로컬/사용자페이지: "/"
+        
+      // [2] base 태그 삽입 (기존 로직 유지)
+      const b = document.createElement('base');
+      b.setAttribute('href', base);
+      document.head.prepend(b);
+      
+      // 🚀 [3] 추가: 계산된 base 경로를 body 데이터셋에 저장
+      // (다른 스크립트에서 fetch 경로를 만들 때 사용하기 위함)
+      document.body.dataset.basePath = base;
+    })();
+  </script>
 
   <!-- ✅ layout.html 로더 (헤더/전체메뉴/푸터 자동 포함) -->
   <script>
@@ -322,4 +329,3 @@
 
 </body>
 </html>
-
