@@ -245,49 +245,21 @@
             <h2 class="section-title">2. 여행 일정 & 상품</h2>
             
             <h3 class="subsection-title">전체 상품 리스트 (기간별/가격대별)</h3>
-            <table class="product-table">
-                <thead>
-                    <tr>
-                        <th>상품명</th>
-                        <th>기간</th>
-                        <th>가격대</th>
-                        <th>테마</th>
-                        <th>상세 보기</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>백두산에서 두만강 해란강 거쳐 하얼빈까지
-                        <td>6박 7일</td>
-                        <td>189만원 ~</td>
-                        <td>핵심 유적</td>
-                        <td><a href="#">일정표</a></td>
-                    </tr>
-                    <tr>
-                        <td>백두산에서 두만강 해란강 거쳐 훈춘 방천까지
-                        <td>6박 7일</td>
-                        <td>189만원 ~</td>
-                        <td>역사 심화</td>
-                        <td><a href="#">일정표</a></td>
-                    </tr>
-                    <tr>
-                        <td>북간도 독립전쟁의 별들을 찾아서
-                        <td>7박 8일</td>
-                        <td>219만원 ~</td>
-                        <td>문학/탐방</td>
-                        <td><a href="#">일정표</a></td>
-                    </tr>
 
-                     </tr>
-                      <tr>
-                        <td>맞춤형 테마 기행, 단체 연수, 역사 캠프 진행
-                        <td>일정협의
-                        <td>일정협의
-                        <td>문학/탐방</td>
-                        <td><a href="#">일정표</a></td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- ✅ 여기서부터: 외부 상품 리스트를 로드 -->
+            <div id="bukgando-product-list"></div>
+            <script>
+              (async () => {
+                try {
+                  const res  = await fetch('products/bukgando_product.html', { cache: 'no-store' });
+                  const html = await res.text();
+                  document.getElementById('bukgando-product-list').innerHTML = html;
+                } catch (e) {
+                  console.error('product include failed:', e);
+                }
+              })();
+            </script>
+            <!-- ✅ 여기까지: 외부 상품 리스트 로더 -->
 
             <h3 class="subsection-title">출발 임박/확정 상품 (하이라이트)</h3>
             <div style="background-color: #fff0f0; padding: 15px; border: 2px solid #ff6347; border-radius: 8px; text-align: center; margin-top: 20px;">
