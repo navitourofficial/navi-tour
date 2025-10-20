@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>예약 · 문의 | NAVI TOUR</title>
+
+  <!-- ✅ GitHub Pages용 동적 BASE 설정 -->
+  <script>
+    (function () {
+      const seg = location.pathname.split('/').filter(Boolean);
+      const base = (location.hostname.endsWith('.github.io') && seg.length > 0)
+        ? '/' + seg[0] + '/'
+        : '/';
+      const b = document.createElement('base');
+      b.setAttribute('href', base);
+      document.head.prepend(b);
+    })();
+  </script>
+
+  <!-- ✅ layout.html 로더 (공통 헤더/푸터/드롭메뉴 자동 포함) -->
+  <script>
+    (async function injectLayout() {
+      try {
+        const res = await fetch('layout/layout.html', { cache: 'no-store' });
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, 'text/html');
+
+        const $headerTpl = doc.getElementById('layout-header');
+        const $footerTpl = doc.getElementById('layout-footer');
+        const $scriptTpl = doc.getElementById('layout-script');
+
+        const headerFrag = $headerTpl ? $headerTpl.content.cloneNode(true) : null;
+        const footerFrag = $footerTpl ? $footerTpl.content.cloneNode(true) : null;
+
+        const main = document.querySelector('main');
+        if (headerFrag) {
+          if (main) document.body.insertBefore(headerFrag, main);
+          else document.body.prepend(headerFrag);
+        }
+        if (footerFrag) document.body.appendChild(footerFrag);
+
+        if ($scriptTpl) {
+          const inline = $scriptTpl.content.querySelector('script');
+          if (inline) {
+            const s = document.createElement('script');
+            s.textContent = inline.textContent;
+            document.body.appendChild(s);
+          }
+        }
+      } catch (e) {
+        console.error('layout include failed:', e);
+      }
+    })();
+  </script>
+
+  <!-- ✅ global_layout.html 로더 (공통 스타일·스크립트 자동 포함) -->
+  <script>
+    (async()=>{
+      try {
+        const res = await fetch('layout/global_layout.html',{cache:'no-store'});
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html,'text/html');
+        const styleTpl  = doc.getElementById('global-layout-style');
+        const scriptTpl = doc.getElementById('global-layout-script');
+        if(styleTpl) document.head.append(styleTpl.content.cloneNode(true));
+        if(scriptTpl){
+          const inline = scriptTpl.content.querySelector('script');
+          if(inline){
+            const s = document.createElement('script');
+            s.textContent = inline.textContent;
+            document.body.appendChild(s);
+          }
+        }
+      } catch(e) { console.error('global layout include failed:', e); }
+    })();
+  </script>
+
+  <!-- 폰트 & 아이콘 -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="main/style.css" />
+
+  <style>
+    body{font-family:'Noto Sans KR',system-ui,-apple-system,Segoe UI,Roboto,'Apple SD Gothic Neo',sans-serif;color:#222;background:#fff}
+    main{max-width:960px;margin:0 auto;padding:20px}
+
+    /* Hero */
+    .hero{border-radius:18px;overflow:hidden;min-height:240px;color:#fff;
+      background:linear-gradient(90deg,rgba(0,0,0,.6) 0%,rgba(0,0,0,.3) 60%,rgba(0,0,0,0) 80%),
+      url('image/hero_inquiry.jpg') center/cover no-repeat; display:flex; align-items:center;}
+    .hero-inner{padding:clamp(16px,5vw,48px)}
+    .hero h1{margin:0 0 6px;font-size:2rem}
+    .hero p{margin:0;opacity:.95}
+
+    /* Form Card */
+    .card{background:#fff;border:1px solid #e7e7e9;border-radius:14px;box-shadow:0 6px 22px rgba(0,0,0,.06);padding:18px}
+    form{display:grid;gap:14px}
+    .row{display:grid;gap:12px}
+    @media(min-width:720px){.row.cols-2{grid-template-columns:1fr 1fr}}
+    label{font-weight:700;display:block;margin-bottom:6px}
+    .help{font-size:.9rem;color:#666}
+    input[type="text"],input[type="email"],input[type="tel"],input[type="date"],input[type="number"],select,textarea{
+      width:100%;padding:12px 12px;border:1px solid #d7d7dc;border-radius:10px;background:#fff;outline:none}
+    textarea{min-height:120px;resize:vertical}
+    input:focus,select:focus,textarea:focus{border-color:#2b64f6;box-shadow:0 0 0 3px rgba(43,100,246,.15)}
+
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:12px;border:1px solid transparent;cursor:pointer;font-weight:700}
+    .btn-primary{background:#2b64f6;color:#fff}
+    .btn-ghost{background:transparent;border-color:#d7d7dc}
+
+    .notice{background:#f7f9ff;border:1px solid #dfe7ff;color:#18327a;padding:12px;border-radius:12px}
+    .required{color:#d11}
+
+    .inline{display:flex;align-items:center;gap:8px}
+    .muted{color:#666;font-size:.92rem}
+
+    /* Floating help */
+    .contact-alt{display:flex;gap:12px;flex-wrap:wrap}
+
+    /* honeypot */
+    .hp{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+
+    /* section headings */
+    h2{margin:22px 0 8px}
+    :target{scroll-margin-top:84px}
+
+    /* Toast */
+    #toast{position:fixed;right:16px;bottom:16px;background:#18327a;color:#fff;padding:12px 14px;border-radius:10px;display:none;z-index:999;box-shadow:0 6px 22px rgba(0,0,0,.25)}
+  </style>
+</head>
+<body>
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-inner">
+        <h1>예약 · 문의</h1>
+        <p>원하시는 일정과 인원을 알려주시면, 맞춤 견적과 좌석 가능 여부를 신속히 안내드립니다.</p>
+      </div>
+    </section>
+
+    <!-- 안내 박스 -->
+    <div class="notice" style="margin-top:16px">
+      <i class="fa-regular fa-circle-check" aria-hidden="true"></i>
+      예약 확정 전까지는 결제가 발생하지 않으며, 담당자가 가능한 좌석/일정/요금을 확인해 연락드립니다.
+    </div>
+
+    <!-- 예약/문의 양식 -->
+    <section aria-labelledby="inquiry-form-title" style="margin-top:18px">
+      <h2 id="inquiry-form-title">문의 양식</h2>
+      <div class="card">
+        <!--
+          📌 전송 방식: FormSubmit(백엔드 불필요)
+          - action 에 수신 이메일을 넣으세요.
+          - _captcha true 권장, _allowed_domains 에 허용 도메인 추가 권장
+        -->
+        <form id="inquiry-form" method="POST" action="https://formsubmit.co/YOUREMAIL@example.com" novalidate>
+          <!-- FormSubmit 옵션들 -->
+          <input type="hidden" name="_subject" value="[NAVI TOUR] 예약/문의 접수" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="true" />
+          <input type="hidden" name="_next" value="thanks.html" />
+          <input type="hidden" name="_allowed_domains" value="yourdomain.github.io,navitour.co.kr" />
+
+          <!-- Spam honeypot -->
+          <div class="hp">
+            <label>Leave this field empty<input type="text" name="company" tabindex="-1" autocomplete="off"></label>
+          </div>
+          <input type="hidden" name="ts" id="ts" />
+
+          <!-- 상품/일정 -->
+          <div class="row cols-2">
+            <div>
+              <label for="product">문의 상품 <span class="required" aria-hidden="true">*</span></label>
+              <select id="product" name="상품" required>
+                <option value="" selected>상품을 선택하세요</option>
+                <option>백두산-두만강-해란강-하얼빈 6박7일</option>
+                <option>백두산-두만강-해란강-훈춘 6박7일</option>
+                <option>북간도 독립전쟁의 별들 5박6일</option>
+                <option>서간도 근대독립사 핵심 4박5일</option>
+                <option>맞춤(단체/학교/가족)</option>
+              </select>
+              <p class="help">여러 상품이 궁금하시면 가장 우선 상품을 고르고 아래 메모란에 추가로 적어주세요.</p>
+            </div>
+            <div>
+              <label for="date">희망 출발일</label>
+              <input type="date" id="date" name="희망출발일" />
+            </div>
+          </div>
+
+          <div class="row cols-2">
+            <div>
+              <label for="n-adult">성인 인원 <span class="required">*</span></label>
+              <input type="number" min="1" max="99" id="n-adult" name="성인" inputmode="numeric" required />
+            </div>
+            <div>
+              <label for="n-teen">학생/아동 인원</label>
+              <input type="number" min="0" max="99" id="n-teen" name="학생/아동" inputmode="numeric" />
+            </div>
+          </div>
+
+          <div class="row cols-2">
+            <div>
+              <label for="name">이름 <span class="required">*</span></label>
+              <input type="text" id="name" name="이름" autocomplete="name" required />
+            </div>
+            <div>
+              <label for="phone">휴대폰 <span class="required">*</span></label>
+              <input type="tel" id="phone" name="휴대폰" autocomplete="tel" placeholder="010-0000-0000" required />
+            </div>
+          </div>
+
+          <div class="row cols-2">
+            <div>
+              <label for="email">이메일</label>
+              <input type="email" id="email" name="이메일" autocomplete="email" />
+            </div>
+            <div>
+              <label for="contact-time">통화 가능 시간</label>
+              <select id="contact-time" name="통화가능시간">
+                <option value="">선택 안 함</option>
+                <option>오전 (09:00–12:00)</option>
+                <option>오후 (13:00–18:00)</option>
+                <option>저녁 (18:00–21:00)</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="message">메모 / 문의 내용</label>
+            <textarea id="message" name="메모" placeholder="예) 출발지는 인천, 부모님 포함 4인 가족 여행. 숙소는 트윈 중심, 일정은 5~6일 선호"></textarea>
+          </div>
+
+          <div class="inline">
+            <input type="checkbox" id="agree" required />
+            <label for="agree" class="muted">
+              (필수) <a href="privacy.html" target="_blank" rel="noopener">개인정보 수집·이용</a>에 동의합니다. 문의 응답 및 예약 진행 목적 외에 사용하지 않습니다.
+            </label>
+          </div>
+
+          <div class="inline" aria-live="polite" id="form-error" style="color:#c00;display:none"></div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" type="submit"><i class="fa-solid fa-paper-plane"></i> 문의 보내기</button>
+            <button class="btn btn-ghost" type="reset">초기화</button>
+          </div>
+
+          <p class="muted">※ 전송이 되지 않을 경우, 아래 대체 채널로 연락 주세요.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- 대체 연락 채널 -->
+    <section aria-labelledby="alt" style="margin-top:20px">
+      <h2 id="alt">빠른 상담 채널</h2>
+      <div class="card">
+        <div class="contact-alt">
+          <a class="btn btn-ghost" href="tel:02-000-0000"><i class="fa-solid fa-phone"></i> 02-000-0000</a>
+          <a class="btn btn-ghost" href="mailto:hello@example.com?subject=%5BNAVI%20TOUR%5D%20%EC%98%88%EC%95%BD%EB%AC%B8%EC%9D%98"><i class="fa-regular fa-envelope"></i> 이메일</a>
+          <a class="btn btn-ghost" href="#" aria-label="카카오톡 채널로 이동"><i class="fa-solid fa-comment"></i> 카카오톡 채널</a>
+        </div>
+        <p class="muted" style="margin-top:8px">운영시간: 평일 10:00–17:00 (점심 12:00–13:00) · 주말/공휴일 휴무</p>
+      </div>
+    </section>
+
+    <!-- 자주 묻는 질문(FAQ) -->
+    <section aria-labelledby="faq" style="margin-top:20px">
+      <h2 id="faq">자주 묻는 질문</h2>
+      <div class="card">
+        <details>
+          <summary><strong>예약 절차는 어떻게 되나요?</strong></summary>
+          <p class="muted">문의 접수 → 좌석/일정/요금 안내 → 계약금 입금 → 확정서 발송 순으로 진행됩니다.</p>
+        </details>
+        <details>
+          <summary><strong>환불/취소 규정은?</strong></summary>
+          <p class="muted">출발일 기준 D-30~D-15: 10%, D-14~D-8: 20%, D-7~D-3: 50%, D-2~당일: 100% (상품별 상이, 약관 참조)</p>
+        </details>
+        <details>
+          <summary><strong>포함/불포함은 어디서 보나요?</strong></summary>
+          <p class="muted">각 상품 상세 페이지 하단 “포함/불포함” 섹션 또는 담당자가 안내드립니다.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <!-- ✅ 상태 토스트 -->
+  <div id="toast" role="status" aria-live="polite">전송 중…</div>
+
+  <!-- ✅ 통합 스크립트: 프리필 + 검증 + 스팸방지 + AJAX 제출 -->
+  <script>
+    (function () {
+      const form   = document.getElementById('inquiry-form');
+      const errBox = document.getElementById('form-error');
+      const toast  = document.getElementById('toast');
+      const tsEl   = document.getElementById('ts');
+      const openedAt = Date.now();
+      tsEl.value = String(openedAt);
+
+      // ---- 유틸
+      const showToast = (msg, ms=2400) => {
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        clearTimeout(showToast._t);
+        showToast._t = setTimeout(()=>toast.style.display='none', ms);
+      };
+
+      const isValidPhone = v => /^0\d{1,2}-?\d{3,4}-?\d{4}$/.test((v||'').trim());
+      const isValidEmail = v => !v || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v||'').trim());
+
+      // ---- URL 파라미터 프리필 (?product=...&date=YYYY-MM-DD)
+      (function prefill(){
+        const params = new URLSearchParams(location.search);
+        const p = params.get('product');
+        const d = params.get('date');
+        if (p) {
+          const sel = document.getElementById('product');
+          const opt = Array.from(sel.options).find(o => o.text === p);
+          if (opt) sel.value = opt.value || opt.text;
+          else sel.insertAdjacentHTML('beforeend', `<option selected>${p}</option>`);
+        }
+        if (d) document.getElementById('date').value = d;
+      })();
+
+      // ---- 제출 처리 (단일 핸들러)
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        errBox.style.display = 'none';
+        errBox.textContent = '';
+
+        // 1) 최소 체류시간(스팸 방지)
+        if (Date.now() - openedAt < 4000) {
+          errBox.textContent = '보안을 위해 페이지를 연 지 4초 이후에 제출할 수 있어요.';
+          errBox.style.display = 'block';
+          return;
+        }
+
+        // 2) 필수값 & 조건부 필수
+        const reqIds = ['product','n-adult','name','phone'];
+        const missed = reqIds.filter(id => !String((form.querySelector('#'+id)||{}).value||'').trim());
+        if (missed.length) {
+          errBox.textContent = '필수 항목을 입력해 주세요: ' + missed.map(x=>({product:'상품', 'n-adult':'성인 인원', name:'이름', phone:'휴대폰'}[x]||x)).join(', ');
+          errBox.style.display = 'block';
+          (form.querySelector('#'+missed[0])||{}).focus?.();
+          return;
+        }
+
+        const phone = document.getElementById('phone');
+        const email = document.getElementById('email');
+
+        if (!phone.value.trim() && !email.value.trim()) {
+          errBox.textContent = '휴대폰 또는 이메일 중 하나는 반드시 입력해 주세요.';
+          errBox.style.display = 'block';
+          phone.focus();
+          return;
+        }
+        if (phone.value.trim() && !isValidPhone(phone.value)) {
+          errBox.textContent = '휴대폰 번호 형식을 확인해 주세요. 예) 010-1234-5678';
+          errBox.style.display = 'block';
+          phone.focus();
+          return;
+        }
+        if (!isValidEmail(email.value)) {
+          errBox.textContent = '이메일 형식을 확인해 주세요.';
+          errBox.style.display = 'block';
+          email.focus();
+          return;
+        }
+        if (!document.getElementById('agree').checked) {
+          errBox.textContent = '개인정보 수집·이용에 동의해 주세요.';
+          errBox.style.display = 'block';
+          document.getElementById('agree').focus();
+          return;
+        }
+
+        // 3) AJAX 제출 (FormSubmit)
+        showToast('전송 중…');
+        const ACTION = form.getAttribute('action');
+        const fd = new FormData(form);
+
+        try {
+          const res = await fetch(ACTION, {
+            method:'POST',
+            headers:{ 'Accept':'application/json' },
+            body: new URLSearchParams(fd)
+          });
+          if (res.ok) {
+            showToast('접수 완료! 곧 연락드릴게요.', 2600);
+            // thanks.html 이동 (설정된 경우)
+            const next = form.querySelector('input[name="_next"]')?.value;
+            if (next) location.href = next;
+            else form.reset();
+          } else {
+            showToast('전송 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.', 3200);
+          }
+        } catch (err) {
+          console.error(err);
+          showToast('네트워크 오류가 발생했습니다. 대체 채널로 연락 부탁드립니다.', 3400);
+        }
+      });
+    })();
+  </script>
+
+  <!-- 구조화 데이터: 문의 페이지 -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "NAVI TOUR 예약·문의",
+    "description": "여행 상품 예약 및 맞춤 견적 문의 페이지",
+    "publisher": {"@type":"Organization","name":"NAVI TOUR"}
+  }
+  </script>
+
+  <!-- 조직 연락처 스키마(선택) -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"NAVI TOUR",
+    "url":"https://yourdomain.github.io/",
+    "contactPoint":[{
+      "@type":"ContactPoint",
+      "telephone":"+82-2-000-0000",
+      "contactType":"customer service",
+      "areaServed":"KR",
+      "availableLanguage":["ko","en"]
+    }]
+  }
+  </script>
+</body>
+</html>
