@@ -323,14 +323,7 @@
                   const html = await res.text();
                   const doc  = new DOMParser().parseFromString(html, 'text/html');
                   const tpl  = doc.getElementById('product-highlights');
-                  const holder = document.getElementById('seogando-highlights');
-                  holder.innerHTML = tpl ? tpl.content.innerHTML : '';
-                  /* 하이라이트 내부 CTA 링크 보정: main/reception.html */
-                  const anchors = holder.querySelectorAll('a, button');
-                  anchors.forEach(a=>{
-                    const t = (a.textContent||'').trim();
-                    if(t.includes('맞춤 일정 상담 신청하기')) a.setAttribute('href','main/reception.html');
-                  });
+     document.getElementById('seogando-highlights').innerHTML = tpl ? tpl.content.innerHTML : '';
                 } catch (e) {
                   console.error('highlight include failed:', e);
                 }
