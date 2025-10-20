@@ -14,7 +14,7 @@
     })();
   </script>
 
-  <!-- ✅ layout.html 로더 (헤더/전체메뉴/푸터 자동 포함) -->
+  <!-- ✅ layout.html 로더 (헤더/전체메뉴/푸터/콘텐츠 블록 자동 포함) -->
   <script>
     (async function injectLayout() {
       try {
@@ -22,12 +22,16 @@
         const html = await res.text();
         const doc  = new DOMParser().parseFromString(html, 'text/html');
 
-        const $headerTpl = doc.getElementById('layout-header');
-        const $footerTpl = doc.getElementById('layout-footer');
-        const $scriptTpl = doc.getElementById('layout-script');
+        const $headerTpl   = doc.getElementById('layout-header');
+        const $footerTpl   = doc.getElementById('layout-footer');
+        const $scriptTpl   = doc.getElementById('layout-script');
+        const $concTpl     = doc.getElementById('layout-concierge');      // 👈 추가
+        const $bottomTpl   = doc.getElementById('layout-bottom-cta');     // 👈 추가
 
         const headerFrag = $headerTpl ? $headerTpl.content.cloneNode(true) : null;
         const footerFrag = $footerTpl ? $footerTpl.content.cloneNode(true) : null;
+        const concFrag   = $concTpl ? $concTpl.content.cloneNode(true) : null;
+        const bottomFrag = $bottomTpl ? $bottomTpl.content.cloneNode(true) : null;
 
         const main = document.querySelector('main');
         if (headerFrag) {
@@ -35,6 +39,12 @@
           else document.body.prepend(headerFrag);
         }
         if (footerFrag) document.body.appendChild(footerFrag);
+
+        // 👇 슬롯에 컴포넌트 삽입
+        const concSlot   = document.getElementById('concierge-slot');
+        const bottomSlot = document.getElementById('bottom-cta-slot');
+        if (concSlot && concFrag) concSlot.replaceWith(concFrag);
+        if (bottomSlot && bottomFrag) bottomSlot.replaceWith(bottomFrag);
 
         if ($scriptTpl) {
           const inline = $scriptTpl.content.querySelector('script');
@@ -79,28 +89,25 @@
     .hero h1{font-family:'Playfair Display',serif;font-size:2.8rem;margin:0 0 6px;}
     .hero p{margin:0;opacity:.9}
 
-    /* Concierge box */
-    .concierge{
-      margin-top:-30px;display:flex;align-items:center;gap:14px;background:#fff;
-      border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
-      padding:14px 18px;}
-    .concierge i{color:var(--gold);font-size:1.3rem}
-    .concierge .txt{flex:1}
-    .concierge .cta{
-      background:var(--gold);border:none;border-radius:10px;padding:10px 16px;color:#fff;font-weight:700;text-decoration:none}
-    .concierge .cta:hover{background:#b18c32}
-
     /* 본문 3열 그리드 */
-    .grid3{
-      display:grid;
-      grid-template-columns:repeat(3, minmax(0, 1fr));
-      gap:18px;
-      margin-top:28px;
-    }
-    @media (max-width:1024px){ .grid3{grid-template-columns:repeat(2,1fr);} }
-    @media (max-width:640px){ .grid3{grid-template-columns:1fr;} }
+/* 본문 그리드: 모바일 1 → 태블릿 2 → 랩톱 3 → 데스크톱 4 */
+.grid3{
+  display:grid;
+  gap:18px;
+  margin-top:28px;
+  grid-template-columns: 1fr;               /* 기본(모바일): 1열 */
+}
 
-    /* 카드 */
+@media (min-width:640px){
+  .grid3{ grid-template-columns: repeat(2, 1fr); } /* 태블릿: 2열 */
+}
+@media (min-width:1024px){
+  .grid3{ grid-template-columns: repeat(3, 1fr); } /* 랩톱: 3열 */
+}
+@media (min-width:1280px){
+  .grid3{ grid-template-columns: repeat(4, 1fr); } /* 데스크톱: 4열 */
+}
+
     .card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);transition:.2s;}
     .card:hover{transform:translateY(-4px);}
     .thumb img{width:100%;aspect-ratio:16/10;object-fit:cover;display:block}
@@ -145,15 +152,111 @@
       .side-filter{position:static; width:auto; margin:14px 0 0 0;}
       main{padding-right:20px;}
     }
+    /* ================== 4열(≥1280px) 비율 보정 오버라이드 ================== */
+@media (min-width:1280px){
+  /* 4열에서 카드 간격, 모서리 */
+  .grid3{ gap:14px; }                /* 기존 18px → 14px */
+  .card{ border-radius:12px; }       /* 살짝 더 컴팩트 */
 
-    .bottom-box{
-      margin:28px 0 40px; padding:20px;border:1px solid var(--line);
-      background:#f9fafc;border-radius:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
-    .bottom-box b{color:#123a59}
-    .bottom-box .btns{display:flex;gap:8px;}
-    .bottom-box a{padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:700;}
-    .bottom-box .ask{background:var(--brand);color:#fff;}
-    .bottom-box .pdf{background:#fff;color:#1e2b38;border:1px solid #d9e0e7;}
+  /* 썸네일: 세로 조금 더 확보(텍스트 공간 줄었으니 시각 밸런스 보정) */
+  .thumb img{
+    aspect-ratio: 16 / 10;           /* 기존 16/10 → 약간 더 세로 */
+    object-fit: cover;
+    display: block;
+  }
+
+  /* 카드 내부 패딩/타이포 컴팩트 */
+  .body{ padding:8px; }             /* 기존 14px → 12px */
+  .body h3{
+    font-size: 1rem;                 /* 제목 1.10rem → 1.00rem */
+    line-height: 1.35;
+    letter-spacing: -0.2px;
+    margin: 0;
+  }
+  .body p{
+    font-size: .7rem;               /* 본문 0.9rem → 0.85rem */
+    margin: 4px 0;
+    color: var(--muted);
+  }
+
+  /* 태그칩 컴팩트 */
+  .tags{ gap:6px; margin:6px 0; }
+  .tag{
+    padding: 5px 8px;                /* 6px 10px → 5px 8px */
+    font-size: .60rem;               /* 0.85rem → 0.80rem */
+  }
+  .tag i{ margin-right:4px; }
+
+  /* 액션 영역(버튼/가격) 컴팩트 */
+  .actions{ gap:6px; margin-top:8px; }
+  .actions a{
+    padding: 7px 10px;               /* 8px 12px → 7px 10px */
+    font-size: .72rem;               /* 0.9rem → 0.85rem */
+    border-radius: 8px;              /* 10px → 8px */
+  }
+  .price{
+    font-size: .95rem;               /* 약간 축소 */
+    font-weight: 800;
+  }
+/* ================== 액션버튼 + 가격 정렬 보정 ================== */
+@media (min-width:1280px){
+  .actions{
+    display: flex;
+    align-items: center;       /* ✅ 세로 중앙정렬 */
+    justify-content: space-between; /* 버튼묶음 왼쪽, 가격 오른쪽 */
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .actions a{
+    padding: 7px 10px;         /* ✅ 세로크기 줄임 (기존 8px → 6px) */
+    font-size: 0.85rem;
+    line-height: 1;
+    border-radius: 8px;
+  }
+
+  /* 버튼 2개 묶음은 왼쪽 정렬, 가격은 오른쪽 붙게 */
+  .actions a + a {
+    margin-right: auto;        /* ✅ 두 번째 버튼 이후 자동으로 왼쪽 정렬 유지 */
+  }
+
+  .price{
+    margin-left: auto;         /* ✅ 오른쪽 끝으로 밀기 */
+    font-weight: 800;
+    color: var(--brand);
+    font-size: 0.95rem;
+    line-height: 1;            /* ✅ 버튼 높이와 시각적으로 맞춤 */
+    align-self: center;        /* ✅ 수직 중앙정렬 (플렉스 기준) */
+  }
+}
+
+  /* 추가 설명(보조 텍스트) */
+  .add{
+    font-size: .60rem;               /* 0.85rem → 0.80rem */
+    margin-top: 4px;
+    color:#687583;
+  }
+
+  /* 우측 필터도 살짝 축소(4열 공간 확보 + 균형) */
+  .side-filter{
+    width: 240px;                    /* 260px → 240px */
+    padding: 12px;                   /* 14px → 12px */
+  }
+  .side-filter h3{ font-size: 1rem; margin-bottom: 8px; }
+  .field{ gap:4px; margin-bottom: 8px; }
+  .sel,.ipt{ padding: 9px 10px; font-size: .95rem; border-radius: 9px; }
+  .chips{ gap:6px; }
+  .chip{
+    padding: 6px 10px;               /* 7px 12px → 6px 10px */
+    font-size: .85rem;
+  }
+  .btn-apply{
+    padding: 9px 0;                  /* 10px → 9px */
+    font-size: .95rem;
+    border-radius: 9px;
+  }
+}
+
   </style>
 </head>
 <body>
@@ -161,35 +264,21 @@
     <!-- Hero -->
     <section class="hero">
       <div>
-                <h1>NAVI TOUR</h1>
-                <p>당신의 다음 비상을 위한 이정표</p>
+        <h1>NAVI TOUR</h1>
+        <p>당신의 다음 비상을 위한 이정표</p>
       </div>
     </section>
 
-    <!-- 콘시어지 배정 서비스 박스 -->
-    <div class="concierge">
-      <i class="fa-solid fa-headset"></i>
-      <div class="txt">
-        <strong>콘시어지 배정 서비스</strong><br>
-        전 일정 1:1 어시스트 · 호텔 업그레이드 상담 · 미식 라인업 커스터마이징
-      </div>
-      <a href="#" class="cta">상담 예약</a>
-    </div>
+    <!-- 🔽 콘시어지 배정 서비스 (레이아웃에서 주입) -->
+    <div id="concierge-slot"></div>
 
     <!-- 상품 3열 리스트 -->
     <section class="grid3" id="list">
       <!-- ⚠️ 외부 파일(/main/main.products.html)에서 카드가 주입됩니다 -->
     </section>
 
-    <!-- 하단 맞춤 안내 박스 -->
-    <div class="bottom-box">
-      <span><b>단체·학교·기업 대상</b> 맞춤형 일정 가능합니다. NAVI TOUR와 함께 당신만의 역사기행을 설계해 보세요.</span>
-      <div class="btns">
-        <a href="#" class="ask"><i class="fa-regular fa-comment-dots"></i> 문의하기</a>
-        <a href="#" class="pdf"><i class="fa-regular fa-file-lines"></i> PDF 견적서</a>
-      </div>
-    </div>
-  </main>
+    <!-- 🔽 하단 맞춤 안내 박스 (레이아웃에서 주입) -->
+    <div id="bottom-cta-slot"></div>
 
   <!-- 우측 여백 고정 필터 -->
   <aside id="sideFilter" class="side-filter">
