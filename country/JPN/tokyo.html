@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>일본 | NAVI TOUR</title>
+
+  <!-- GitHub Pages용 동적 BASE -->
+  <script>
+    (function () {
+      const seg = location.pathname.split('/').filter(Boolean);
+      const base = (location.hostname.endsWith('.github.io') && seg.length > 0)
+        ? '/' + seg[0] + '/'
+        : '/';
+      const b = document.createElement('base');
+      b.setAttribute('href', base);
+      document.head.prepend(b);
+    })();
+  </script>
+
+  <!-- 폰트 & 아이콘 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;700&family=Playfair+Display:wght@400;600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <!-- 메인/전역 스타일 -->
+  <link rel="stylesheet" href="style/main.css">
+  <link rel="stylesheet" href="layout/X_layout.css?v=20251025">
+
+  <!-- 성능 -->
+  <link rel="preload" as="image" href="image/card/jpn/tokyo/banner_tokyo.png">
+  <style>
+    :target { scroll-margin-top: 88px; }
+    .content-section { content-visibility: auto; contain-intrinsic-size: 600px; }
+  </style>
+
+  <!-- 부트 스크립트 프리로드 -->
+  <link rel="modulepreload" href="lib/boot.js">
+</head>
+<body>
+
+  <main id="page"
+        data-region="tokyo"
+        data-hero="image/card/jpn/tokyo/banner_tokyo.png"
+        data-product="products/J_tokyo_prod.html"
+        data-mount-list="#tokyo-product-list"
+        data-mount-high="#tokyo-highlights"
+        data-mount-sites="#tokyo-site-cards">
+
+    <!-- Hero: 변수만 지정 -->
+    <section class="hero" style="--hero-img:url('image/card/jpn/tokyo/banner_tokyo.png'); --hero-x:flex-start;">
+      <div class="hero-content">
+        <h1>일본</h1>
+        <p>바다를 건너 도착한 그곳에서,<br>자유의 불씨가 피어나다.</p>
+      </div>
+    </section>
+
+    <div id="concierge-slot"></div>
+
+    <nav class="page-nav-tabs">
+      <a href="#intro">개요 및 역사</a>
+      <a href="#section-2">여행 일정 & 상품</a>
+      <a href="#section-3">역사·답사·자료관</a>
+      <a href="#section-4">여행 후기 & 기록</a>
+    </nav>
+
+    <section class="content-section">
+      <h2 class="section-title">추천의 말</h2>
+      <div class="recommendation-grid">
+        <div class="recommendation-card">
+          <blockquote>
+            일본은 식민의 기억과 저항의 흔적이 교차하는 공간입니다. 도쿄의 유학생들이 외친 2·8 독립선언은 민족의 자존을 지켜낸 불씨였고, 그 뜻은 오늘의 청년들에게도 깊은 울림을 줍니다.
+          </blockquote>
+          <div class="recommendation-footer">
+            <div class="author">이은정 박사</div>
+            <div class="title">근현대사 연구자</div>
+          </div>
+        </div>
+        <div class="recommendation-card">
+          <blockquote>
+            교토와 요코하마의 유학지들은 단순한 공부의 터전이 아니라, 식민지 청년들이 자유를 모색하던 정신의 전선이었습니다. 현장에서 배우는 그들의 결의는 교실보다 강력한 역사 수업이 됩니다.
+          </blockquote>
+          <div class="recommendation-footer">
+            <div class="author">김태훈 교수</div>
+            <div class="title">역사교육 전공</div>
+          </div>
+        </div>
+        <div class="recommendation-card">
+          <blockquote>
+            히로시마 평화기념관을 찾는 길은 단순한 추모가 아닙니다. 전쟁과 폭력의 참혹함 속에서, 인류의 평화와 독립의 가치를 다시 배우는 여정이 됩니다. 학생들에게 권하고 싶은 의미 깊은 답사입니다.
+          </blockquote>
+          <div class="recommendation-footer">
+            <div class="author">박소연</div>
+            <div class="title">평화인권교육 활동가</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 개요 & 역사 -->
+    <section id="intro" class="content-section intro-section">
+      <h2 class="section-title">개요 및 역사</h2>
+      <div class="intro-card">
+        <h3 class="subsection-title">왜 일본인가?</h3>
+        <p>
+          <strong>일본</strong>은 단순한 ‘타국’이 아닙니다. 조국의 독립을 꿈꾸던 청년들이 가장 먼저 부딪히고, 가장 치열하게 사상과 신념을 다듬었던 <strong>현대 독립운동의 출발점</strong>이었습니다.
+          <br><br>
+          <strong>이곳은 ‘저항이 태동한 땅’입니다.</strong><br><br>
+          1919년 2월 8일, 도쿄 조선기독교청년회관에서 울려 퍼진 <strong>2·8독립선언</strong>은 일제의 심장부 한가운데서 조선 청년들이 세계를 향해 던진 첫 외침이었습니다. 그 선언은 한 달 뒤 <strong>3·1운동</strong>으로 이어져 민족 전체를 깨우는 거대한 물결을 만들었습니다.
+          <br><br>
+          도쿄·교토·요코하마·오사카 등지에는 <strong>유학생과 지식인들이 결집한 항일 네트워크</strong>가 형성되었습니다. 그들은 펜으로, 강연으로, 신앙과 문화운동으로 자유의 사상을 퍼뜨렸고, 많은 인물이 귀국 후 <strong>임시정부와 독립군의 주축</strong>이 되었습니다.
+          <br><br>
+          또한 히로시마와 나가사키는 전쟁과 폭력의 비극을 넘어 <strong>평화와 인류 보편의 가치를 일깨우는 공간</strong>으로 오늘날까지 ‘평화의 기억’을 전하고 있습니다.
+          <br><br>
+          <strong>나비투어의 ‘일본 독립의 길’</strong>은 도쿄의 2·8독립선언 터에서 히로시마 평화기념공원까지, 저항과 각성의 여정을 따라가는 <em>사상과 실천의 루트</em>입니다. 청년들의 결의, 그리고 평화를 향한 인류의 약속을 현장에서 직접 마주하며, <strong>깨어 있는 역사 인식</strong>과 <strong>지속되는 독립정신</strong>을 다시금 우리의 마음에 새기게 될 것입니다.
+        </p>
+      </div>
+    </section>
+
+    <!-- 여행 일정 & 상품 -->
+    <section class="content-section" id="section-2">
+      <h2 class="section-title">여행 일정 · 상품</h2>
+      <h3 class="subsection-title">전체 상품 리스트 (기간별/가격대별)</h3>
+      <div id="tokyo-product-list"></div>
+      <div id="tokyo-highlights"></div>
+    </section>
+
+    <!-- 역사·답사·자료관 -->
+    <section class="content-section" id="section-3">
+      <h2 class="section-title">역사·답사·자료관</h2>
+      <h3 class="subsection-title">주요 사적지 & 관광지</h3>
+      <div id="tokyo-site-cards"></div>
+    </section>
+
+    <!-- 전문가 & 인솔자 -->
+    <h3 class="subsection-title">전문가 & 인솔자 소개</h3>
+    <div style="display:flex; gap:20px; margin-top:20px;">
+      <div class="expert-card">
+        <div class="profile-img"><i class="fas fa-graduation-cap" aria-hidden="true"></i></div>
+        <h5>최정학 역사 해설가</h5>
+        <span>국사편찬위원회 사료조사위원</span>
+        <span>성균관대 사학과</span>
+        <p>현지 역사 연구 20년 경력. 간도 역사의 숨겨진 이야기를 생생하게 전달합니다.</p>
+      </div>
+      <div class="expert-card">
+        <div class="profile-img"><i class="fas fa-route" aria-hidden="true"></i></div>
+        <h5>이지은 전문 인솔자</h5>
+        <span>안전 및 코디네이터</span>
+        <p>안전한 답사를 위한 현지 코디네이팅 전문가. 여행 전반의 편의를 책임집니다.</p>
+      </div>
+    </div>
+
+    <!-- 후기 -->
+    <section class="content-section" id="section-4">
+      <h2 class="section-title">여행 후기 · 기록</h2>
+      <h3 class="subsection-title">참가자 생생 후기</h3>
+      <div class="review-grid">
+        <div class="review-card">
+          <div class="rating" aria-label="5점 만점 5점">★★★★★</div>
+          <p>"만주벌판의 바람을 맞으니, 비로소 독립운동가들의 마음을 조금이나마 이해할 수 있었습니다. 최고의 역사 교육 경험입니다."</p>
+          <div class="reviewer">김** 학생 (청소년 답사)</div>
+        </div>
+        <div class="review-card">
+          <div class="rating" aria-label="5점 만점 5점">★★★★★</div>
+          <p>"인솔자님의 깊이 있는 해설 덕분에 단순한 여행이 아닌, 삶의 이정표를 찾는 귀한 기행이 되었습니다."</p>
+          <div class="reviewer">박** 교사 (교사 연수)</div>
+        </div>
+        <div class="review-card">
+          <div class="rating" aria-label="5점 만점 5점">★★★★★</div>
+          <p>"가족 모두가 감동한 잊지 못할 추억. 숙소와 식사도 품격형답게 깔끔해서 만족스러웠습니다."</p>
+          <div class="reviewer">최** 가족 (품격형 상품)</div>
+        </div>
+      </div>
+    </section>
+
+    <div id="bottom-cta-slot"></div>
+  </main>
+
+  <script type="module" src="lib/boot.js" defer></script>
+</body>
+</html>

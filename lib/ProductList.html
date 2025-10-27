@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>상품 리스트</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; }
+    .grid { display:grid; gap:16px; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); }
+    .card { border:1px solid #e5e7eb; border-radius:12px; background:#fff; padding:16px; }
+    .add { color:#6b7280; font-size:12px; margin-bottom:6px; }
+    .card h3 { font-size:18px; margin:6px 0; }
+    .meta, .route { font-size:13px; color:#374151; margin-top:6px; }
+    .tags { margin-top:8px; display:flex; flex-wrap:wrap; gap:6px; }
+    .tag { padding:2px 8px; border-radius:999px; border:1px solid #e5e7eb; font-size:12px; }
+  </style>
+</head>
+<body>
+  <h1>상품 리스트</h1>
+  <section id="product-list" class="grid"></section>
+
+ <script type="module">
+// 방법 A(권장): 파일 → 웹에 게시 → 형식: CSV 로 복사한 “그 링크”를 그대로 붙여넣기
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSL7qHrI7ngcJ6TvE4MiogiYdXnHirwB892g6tj_oDjQx-Hzenw1LV-Hz7My0V71-c978LZ2UhyVwPK/pub?output=csv";
+
+    // --- CSV 파서(따옴표/콤마 안전) ---
+    function parseCSV(csv) {
+      const rows = [];
+      let row = [], cell = "", i = 0, inQuotes = false;
+      while (i < csv.length) {
+        const c = csv[i];
+        if (inQuotes) {
+          if (c === '"') {
+            if (csv[i + 1] === '"') { cell += '"'; i++; } else { inQuotes = false; }
+          } else { cell += c; }
+        } else {
+          if (c === '"') inQuotes = true;
+          else if (c === ",") { row.push(cell); cell = ""; }
+          else if (c === "\n") { row.push(cell); rows.push(row); row = []; cell = ""; }
+          else if (c === "\r") { /* ignore */ }
+          else { cell += c; }
+        }
+        i++;
+      }
+      if (cell.length || row.length) { row.push(cell); rows.push(row); }
+      return rows.filter(r => r.length && r.some(x => String(x).trim() !== ""));
+    }
+
+    // --- 보조 함수 ---
+    const toInt = s => s && String(s).trim() !== "" ? parseInt(String(s).replace(/[^\d]/g, ""), 10) : null;
+    const split = (s, sep = /[|,]/) => (s || "").split(sep).map(v => v.trim()).filter(Boolean);
+    const regionPath = s => (s || "").split(">").map(v => v.trim()).filter(Boolean);
+    const krw = n => new Intl.NumberFormat("ko-KR", { style: "currency", currency: "KRW", maximumFractionDigits: 0 }).format(n || 0);
+
+    // --- CSV → 제품 오브젝트 (1행 라벨, 2행 키 가정) ---
+    function makeProducts(rows) {
+      if (rows.length < 3) return [];
+      const keys = rows[1].map(s => String(s).trim());  // 2행: 키(id, slug, ...)
+      const dataRows = rows.slice(2);                   // 3행부터: 데이터
+      return dataRows.map(r => {
+        const f = {}; keys.forEach((k, i) => f[k] = (r[i] ?? "").trim());
+
+        const route = f.finishroute ? `${f.route} → ${f.finishroute}` : f.route;
+
+        return {
+          id: f.id,
+          slug: f.slug,
+          countries: split(f.countries),
+          regions: regionPath(f.regions),
+          title_std: f.title_std,
+          copy: { title: f.title, summary: f.summary, description: f.description },
+          duration: { days: toInt(f.days) ?? 0, nights: toInt(f.nights) ?? 0, iso: `P${toInt(f.nights)||0}N${toInt(f.days)||0}D` },
+          themes: split(f.themes),
+          pricing: { fromKRW: toInt(f.fromKRW) || 0 },
+          tags: split(f.tags),
+          logistics: { route },
+          minPax: toInt(f.minPax)
+        };
+      }).filter(p => p.slug || (p.copy && p.copy.title) || p.title_std);
+    }
+
+    // --- 렌더 ---
+    function render(products) {
+      const $wrap = document.querySelector("#product-list");
+      $wrap.innerHTML = products.map(p => `
+        <article class="card">
+          <div class="body">
+            <div class="add">${(p.regions||[]).join(" · ")}</div>
+            <h3>${p.copy.title || p.title_std || p.slug || "-"}</h3>
+            ${p.copy.summary ? `<p>${p.copy.summary}</p>` : ""}
+            <div class="meta">${p.duration.nights}박 ${p.duration.days}일 · ${krw(p.pricing.fromKRW)} 부터</div>
+            ${p.logistics.route ? `<div class="route">${p.logistics.route}</div>` : ""}
+            ${p.tags?.length ? `<div class="tags">${p.tags.map(t=>`<span class="tag">${t}</span>`).join("")}</div>` : ""}
+          </div>
+        </article>
+      `).join("");
+    }
+
+    // --- 실행 ---
+    try {
+      const res = await fetch(`${CSV_URL}&t=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const text = await res.text();
+      const rows = parseCSV(text);
+      render(makeProducts(rows));
+    } catch (e) {
+      console.error("시트 로드 실패:", e);
+      document.querySelector("#product-list").innerHTML = `<p>데이터를 불러오지 못했습니다.</p>`;
+    }
+  </script>
+</body>
+</html>
