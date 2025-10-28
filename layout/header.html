@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>NAVI TOUR HEADER</title>
+
+  <!--
+  ─────────────────────────────────────────────────────────────────────────────
+  📚 이 파일의 섹션 목차
+  0) <head> 공통 메타/의존성
+  1) <template id="layout-header"> 헤더 전체 (메인/서브 네비 + 전체메뉴 레이어)
+     1-1) .main-nav : 로고/검색 + 인증/마이메뉴
+     1-2) .sub-nav  : 1차 카테고리 + 2차 드롭다운
+     1-3) .all-menu-dropdown-layer : 전체 메뉴 레이어(햄버거 버튼)
+     1-4) <style> : 헤더 템플릿 내부 전용 스타일(폰트/컬러)
+  2) <template id="layout-concierge"> 상단 안내(콘시어지) 박스
+  3) <template id="layout-script"> 헤더 인터랙션 스크립트(메뉴 토글/드롭다운)
+  ─────────────────────────────────────────────────────────────────────────────
+  의존성 & 주의사항
+  • layout/X_layout.css : 헤더의 레이아웃/드롭다운/레이어 스타일 핵심 정의
+  • Font Awesome CSS    : <i class="fas ..."> 아이콘 사용 → 전역에서 로드되어야 함
+  • 경로 구분자         : Windows 스타일 역슬래시(\)가 일부 보임 → 웹 경로는 / 권장
+  ─────────────────────────────────────────────────────────────────────────────
+  -->
+
+  <!-- ✅ 로고 효과 + 헤더 전용 CSS (레이아웃/드롭다운/UI 기본 톤)
+       조절 포인트: X_layout.css 안의 색상 변수, 높이, 그림자, z-index 등 -->
+  <link rel="stylesheet" href="layout/X_layout.css">
+</head>
+<body>
+  <!-- ========================== 1. HEADER (공통) ========================== -->
+  <!--
+    역할: 모든 페이지에 공통으로 주입되는 상단 헤더.
+    포함: 메인 네비(.main-nav), 서브 네비(.sub-nav), 전체메뉴 레이어(.all-menu-dropdown-layer)
+    조절 포인트:
+      • 헤더 고정 여부/그림자: global_layout.html 의 header 스타일 또는 X_layout.css
+      • 헤더 높이/패딩: .main-nav, .sub-nav 높이/라인
+      • 스크롤 대응 sticky top 오프셋: global_layout.html 의 --sticky-offset(전역)
+  -->
+  <template id="layout-header">
+    <header>
+      <!-- ===== 1-1. 메인 네비게이션 바 ===== -->
+      <!--
+        역할: 로고/검색/마이메뉴를 담는 1차 상단 바.
+        조절 포인트:
+          • 로고 영역 너비/정렬: .main-nav-logo-container
+          • 검색 박스 크기/placeholder: .main-search-box, input[placeholder]
+          • 아이콘 간격/크기: .auth-bottom-icons a, .auth-icon
+      -->
+      <nav class="main-nav">
+        <div class="main-nav-content">
+          <!-- 1-1-1. 로고 & 검색 -->
+          <div class="logo-and-search">
+            <div class="logo-image-sub-nav-container main-nav-logo-container">
+              <!--
+                href : 로고 클릭시 홈으로 이동. SPA라면 루트 경로로 변경 가능.
+                src  : 로고 이미지. 고해상도(2x) PNG/SVG 권장.
+                조절 포인트: 로고 높이/여백은 X_layout.css 의 .main-nav-logo 관련 규칙
+                ⚠ 경로 구분자: image\logo\my_logo3.png → / 사용 권장 (image/logo/my_logo3.png)
+              -->
+              <a href="index.html">
+                <img src="image\logo\my_logo3.png" alt="NAVI TOUR Logo" class="sub-nav-logo main-nav-logo" id="main-logo-image">
+              </a>
+            </div>
+
+            <!-- 검색 박스 -->
+            <!--
+              역할: 키워드 검색 입력창(기능 연동은 별도 스크립트).
+              조절 포인트:
+                • 입력창 폭/둥글기: .main-search-input
+                • 검색 아이콘 위치/색상: .main-search-icon
+                • placeholder 문구: placeholder="검색"
+            -->
+            <div class="nav-tools main-search-box">
+              <input type="text" class="search-input main-search-input" placeholder="검색">
+              <i class="fas fa-search search-icon main-search-icon"></i>
+            </div>
+          </div>
+
+          <!-- 1-1-2. 인증/마이메뉴 -->
+          <!--
+            역할: 고객센터/QnA/문의하기로 빠르게 이동하는 퀵 링크.
+            조절 포인트:
+              • 아이콘/텍스트 간격: .icon-text-link
+              • 아이콘 크기/컬러: .auth-icon
+              • 링크 추가/삭제: 아래 <a> 블록 단위
+              ⚠ 경로 구분자: support\*.html → / 권장
+          -->
+          <div class="auth-bottom-icons">
+            <a href="support\support.html" class="icon-text-link">
+              <i class="fas fa-user auth-icon"></i><span>고객센터</span>
+            </a>
+            <a href="support\qna.html" class="icon-text-link">
+              <i class="fas fa-calendar-alt auth-icon"></i><span>QnA</span>
+            </a>
+            <a href="support\reception.html" class="icon-text-link">
+              <i class="fas fa-heart auth-icon"></i><span>문의하기</span>
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      <!-- ===== 1-2. 서브 네비게이션 바 ===== -->
+      <!--
+        역할: 1차 카테고리(중국/러시아/일본/하와이/베트남/테마기행)와 그 하위 드롭다운.
+        동작: hover 시 .dropdown-content 표시(스크립트에서 mouseenter/mouseleave 처리)
+        조절 포인트:
+          • 탭 간 간격/패딩/분리선: .sub-nav, .sub-nav-links li
+          • 드롭다운 너비/열배치/z-index: .dropdown-content (X_layout.css)
+          • 모바일 열림 방식(hover → click): layout-script 조정
+          ⚠ a[href="#"]는 스크롤 최상단으로 튀는 현상 방지 위해 e.preventDefault() 처리 필요(중국 상위 링크는 이미 처리)
+      -->
+      <nav class="sub-nav">
+        <div class="sub-nav-content">
+          <!-- 전체메뉴(햄버거) -->
+          <!--
+            역할: 모든 카테고리를 한눈에 보여주는 오버레이 레이어 토글 버튼.
+            조절 포인트:
+              • 버튼 라벨/아이콘: #all-menu-toggle
+              • 레이어의 z-index/배경 블러/열 수: X_layout.css 의 .all-menu-dropdown-layer
+          -->
+          <div class="all-menu-btn" id="all-menu-toggle">
+            <i class="fas fa-bars"></i> 전체메뉴
+          </div>
+
+          <ul class="sub-nav-links">
+            <!-- 드롭다운: 중국 -->
+            <li class="dropdown-item">
+              <!-- ✅ 상위 링크 클릭 시 이동 막고 드롭박스만 열리게 (스크립트에서 처리) -->
+              <a href="#" id="china-menu-link">중국</a>
+              <div class="dropdown-content">
+                <!-- ✅ 하위 링크는 실제 페이지로 이동 -->
+                <a href="country/CHN/sgando.html">서간도(고구려)</a>
+                <a href="country/CHN/bgando.html">북간도(발해)</a>
+                <!-- ⚠ 경로 구분자: \ → / 권장 -->
+                <a href="country\CHN\KPG.html">상해</a><a href="country\CHN\KPG.html">함주</a><a href="country\CHN\KPG.html">난징</a><a href="country\CHN\KPG.html">진강</a>
+                <a href="country\CHN\KPG.html">장사</a><a href="country\CHN\KPG.html">유주</a><a href="country\CHN\KPG.html">치장</a><a href="country\CHN\KPG.html">충칭</a>
+              </div>
+            </li>
+
+            <!-- 드롭다운: 러시아 -->
+            <li class="dropdown-item">
+              <a href="country/RUS/yhaeju.html">러시아</a>
+              <div class="dropdown-content">
+                <a href="country/RUS/yhaeju.html">블라디보스톡(연해주)</a>
+              </div>
+            </li>
+
+            <!-- 드롭다운: 일본 -->
+            <li class="dropdown-item">
+              <a href="country/JPN/tokyo.html">일본</a>
+              <div class="dropdown-content">
+                <a href="country/JPN/tokyo.html">도쿄</a><a href="country/JPN/tokyo.html">교토</a><a href="country/JPN/tokyo.html">오사카</a><a href="country/JPN/tokyo.html">후쿠오카</a>
+              </div>
+            </li>
+
+            <!-- 드롭다운: 하와이 -->
+            <li class="dropdown-item">
+              <a href="country/USA/hawaii.html">하와이</a>
+              <div class="dropdown-content">
+                <a href="country/USA/hawaii.html">하와이</a>
+              </div>
+            </li>
+
+            <!-- 드롭다운: 베트남 -->
+            <li class="dropdown-item">
+              <!-- ⚠ 경로 구분자: \ → / 권장 -->
+              <a href="global\Japan\vietnam.html">베트남</a>
+              <div class="dropdown-content">
+                <a href="global\Japan\vietnam.html">하노이</a><a href="global\Japan\vietnam.html">다낭</a>
+              </div>
+            </li>
+
+            <!-- 드롭다운: 테마기행 -->
+            <li class="dropdown-item">
+              <a href="#">테마기행</a>
+              <div class="dropdown-content">
+                <a href="#">인물기행</a><a href="#">마을기행</a><a href="#">생태탐방</a><a href="#">환경탐방</a>
+                <a href="#">국토순례</a><a href="#">역사탐방</a><a href="#">언어연수</a><a href="#">해외교류</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- ===== 1-4. 헤더 내부 전용 스타일 ===== -->
+      <!--
+        역할: 헤더 템플릿과 밀접한 스타일(폰트/컬러)을 이 템플릿 내에서만 적용.
+        조절 포인트:
+          • .sub-nav-content padding-left : 본문 좌여백과 맞춤(31px → 페이지 디자인에 맞게)
+          • @import Pretendard : 전역에서 이미 불러왔다면 중복 로드 방지 위해 제거 가능
+          • hover 색상/전환속도: .sub-nav a:hover
+        ⚠ 템플릿이 여러 번 주입되면 @import가 중복될 수 있음 → 전역 로드로 이관 권장
+      -->
+      <style>
+        .sub-nav-content { padding-left: 31px; }  /* 본문과 같은 값으로(본문 좌 패딩과 동기화 권장) */
+
+        /* ✅ 폰트 스타일 적용 (Pretendard + Noto Sans KR) */
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+
+        .sub-nav,
+        .sub-nav a,
+        .sub-nav .dropdown-content a,
+        .all-menu-btn {
+          font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+          font-weight: 500;         /* 400(보통)~700(볼드) 사이 조절 */
+          letter-spacing: 0.3px;    /* 자간. 0~0.6px 권장 */
+          color: #222;              /* 기본 글자색 */
+        }
+
+        .sub-nav a:hover {
+          color: #0056b3;           /* 호버 텍스트 컬러 */
+          transition: color 0.2s ease;
+        }
+      </style>
+
+      <!-- ===== 1-3. 전체 메뉴 드롭다운 레이어 ===== -->
+      <!--
+        역할: 전체 카테고리를 한 화면에 보여주는 오버레이 레이어.
+        동작: #all-menu-toggle 클릭 → .all-menu-dropdown-layer 에 .active 토글
+        조절 포인트(주로 X_layout.css):
+          • 고정 위치 여부: position: fixed; top/left/right/bottom
+          • 배경 마스크/블러: backdrop-filter, 배경색의 알파
+          • 열 수/컬럼 간격: .all-menu-content-wrapper, .menu-column
+          • z-index: 다른 고정 요소와 겹치면 수치 상승
+      -->
+      <div class="all-menu-dropdown-layer" id="all-menu-layer">
+        <div class="all-menu-content-wrapper">
+          <div class="menu-column">
+            <h4 class="menu-column-title"><a href="global/China/seogando_bukgando.html" style="color: inherit;">서간도/북간도</a></h4>
+            <ul class="menu-list">
+              <li><a href="#">서간도(고구려)</a></li>
+              <li><a href="#">북간도(발해)</a></li>
+            </ul>
+
+            <h4 class="menu-column-title"><a href="#">임시정부의 발자취</a></h4>
+            <ul class="menu-list">
+              <!-- ⚠ 경로 구분자: \ → / 권장 -->
+              <li><a href="country\CHN\KPG.html">상해</a></li><li><a href="country\CHN\KPG.html">함주</a></li><li><a href="country\CHN\KPG.html">난징</a></li><li><a href="country\CHN\KPG.html">진강</a></li>
+              <li><a href="country\CHN\KPG.html">장사</a></li><li><a href="country\CHN\KPG.html">유주</a></li><li><a href="country\CHN\KPG.html">치장</a></li><li><a href="country\CHN\KPG.html">충칭</a></li>
+            </ul>
+          </div>
+
+          <div class="menu-column">
+            <!-- ⚠ 경로 구분자: \ → / 권장 -->
+            <h4 class="menu-column-title"><a href="global\Russia\yeonhaeju.html" style="color: inherit;">블라디보스톡-우수리스크</a></h4>
+            <ul class="menu-list">
+              <li><a href="global\Russia\yeonhaeju.html">블라디보스톡-우수리크스</a></li>
+            </ul>
+
+            <h4 class="menu-column-title"><a href="global\Japan\tokyo.html" style="color: inherit;"></a>일본</h4>
+            <ul class="menu-list">
+              <li><a href="global\Japan\tokyo.html">도쿄</a></li><li><a href="global\Japan\tokyo.html">교토</a></li><li><a href="global\Japan\tokyo.html">오사카</a></li><li><a href="global\Japan\tokyo.html">후쿠오카</a></li>
+            </ul>
+          </div>
+
+          <div class="menu-column">
+            <h4 class="menu-column-title">베트남 평화기행</h4>
+            <ul class="menu-list">
+              <!-- ⚠ 경로 구분자: \ → / 권장 -->
+              <li><a href="global\Japan\vietnam.html">하노이</a></li><li><a href="global\Japan\vietnam.html">다낭</a></li>
+            </ul>
+
+            <h4 class="menu-column-title">테마기행</h4>
+            <ul class="menu-list">
+              <li><a href="#">국토순례</a></li><li><a href="#">역사탐방</a></li><li><a href="#">언어연수</a></li><li><a href="#">해외교류</a></li>
+              <li><a href="#">인물기행</a></li><li><a href="#">마을기행</a></li><li><a href="#">생태탐방</a></li><li><a href="#">환경탐방</a></li>
+            </ul>
+          </div>
+
+          <div class="menu-column">
+            <h4 class="menu-column-title">고객센터</h4>
+            <ul class="menu-list">
+              <li><a href="#">공지사항</a></li>
+              <!-- ⚠ 경로 구분자: \ → / 권장 -->
+              <li><a href="main\qna.html">자주 묻는 질문 / QnA</a></li>
+              <li><a href="support\reception.html">문의하기</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </header>
+  </template>
+
+  <!-- ========================== (선택) 콘시어지 박스: 상단 안내 박스 ========================== -->
+  <!--
+    역할: 히어로 바로 아래 겹쳐 보이는 안내/CTA 카드.
+    조절 포인트:
+      • margin-top: -30px → 겹침 높이(히어로와 얼마나 겹칠지)
+      • 테두리/그림자: var(--line), var(--shadow) 전역 변수를 통해 톤 통일
+      • 버튼 색: var(--gold) (호버 컬러는 직접 상수)
+      • 아이콘 크기: .concierge i { font-size }
+    접근성:
+      • 텍스트 대비/폰트 크기 점검(모바일 14~16px 이상 권장)
+  -->
+  <template id="layout-concierge">
+    <section>
+      <style>
+        .concierge{
+          margin-top:-30px;display:flex;align-items:center;gap:14px;background:#fff;
+          border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+          padding:14px 18px;}
+        .concierge i{color:var(--gold);font-size:1.3rem}
+        .concierge .txt{flex:1}
+        .concierge .cta{
+          background:var(--gold);border:none;border-radius:10px;padding:10px 16px;color:#fff;font-weight:700;text-decoration:none}
+        .concierge .cta:hover{background:#b18c32}
+      </style>
+
+      <div class="concierge">
+        <i class="fa-solid fa-headset"></i>
+        <div class="txt">
+          <strong>콘시어지 배정 서비스</strong><br>
+          전 일정 1:1 어시스트 · 호텔 업그레이드 상담 · 미식 라인업 커스터마이징
+        </div>
+        <a href="support\reception.html" class="cta">상담 예약</a>
+      </div>
+    </section>
+  </template>
+
+  <!-- ========================== 3. SCRIPT (메뉴 토글/드롭다운) ========================== -->
+  <!--
+    역할: 헤더 인터랙션(전체메뉴 열기/닫기, 드롭다운 hover/click).
+    조절 포인트:
+      • 전체메뉴 토글 대상/클래스명: #all-menu-toggle / #all-menu-layer.active
+      • 서브네비 잠금 클래스: .sub-nav.menu-locked (열렸을 때 배경 스크롤 제어용)
+      • 드롭다운 표시 방식: mouseenter/mouseleave → 모바일은 click 기반으로 바꾸는 게 안정적
+      • 중국 상위 메뉴: 클릭시 이동 막고 드롭 컨텐츠 토글(기본 상태는 display:none)
+    접근성/모바일:
+      • 키보드 포커스 접근성: focusin/focusout, aria-expanded 속성 추가 고려
+      • 터치 디바이스: hover 대신 click/touchstart 이벤트로 토글 권장
+  -->
+  <template id="layout-script">
+    <script>
+      (function () {
+        // 3-1. 전체메뉴 토글
+        // - #all-menu-toggle 클릭 → #all-menu-layer 에 .active 토글
+        // - .sub-nav.menu-locked : 전체메뉴 열렸을 때 서브네비 상태 잠금(스타일 제어용)
+        const allMenuToggle = document.getElementById('all-menu-toggle');
+        const allMenuLayer  = document.getElementById('all-menu-layer');
+        const subNav        = document.querySelector('.sub-nav');
+
+        if (allMenuToggle && allMenuLayer && subNav) {
+          allMenuToggle.addEventListener('click', () => {
+            allMenuLayer.classList.toggle('active'); // 조절 포인트: .active 상태의 스타일은 X_layout.css 에서
+            subNav.classList.toggle('menu-locked', allMenuLayer.classList.contains('active'));
+          });
+
+          // 레이어 바깥 클릭 시 닫기
+          document.addEventListener('click', (e) => {
+            if (!allMenuLayer.contains(e.target) && !allMenuToggle.contains(e.target)) {
+              allMenuLayer.classList.remove('active');
+              subNav.classList.remove('menu-locked');
+            }
+          });
+        }
+
+        // 3-2. 드롭다운 hover
+        // - 데스크탑에서 hover 시 .dropdown-content 표시
+        // - CSS 대신 JS로 display 제어(외부 CSS 충돌 회피) → 모바일 대응 시 click 기반으로 전환 가능
+        const dropdownItems = document.querySelectorAll('.sub-nav-links .dropdown-item');
+        dropdownItems.forEach(item => {
+          const menu = item.querySelector('.dropdown-content');
+          if (!menu) return;
+          item.addEventListener('mouseenter', () => menu.style.display = 'block');
+          item.addEventListener('mouseleave', () => menu.style.display = 'none');
+        });
+
+        // 3-3. '서간도/북간도' 상위 메뉴: 클릭 시 이동 막고 드롭박스 토글
+        // - a[href="#"] 기본 동작을 막아 페이지 최상단 점프 방지
+        // - 클릭 토글: 터치 환경에서도 동작
+        const chinaMenuLink = document.getElementById('china-menu-link');
+        if (chinaMenuLink) {
+          const chinaDropdown = chinaMenuLink.parentElement.querySelector('.dropdown-content');
+          chinaMenuLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (!chinaDropdown) return;
+            chinaDropdown.style.display = (chinaDropdown.style.display === 'block') ? 'none' : 'block';
+          });
+          // 바깥 클릭 시 닫기
+          document.addEventListener('click', (e) => {
+            if (!chinaMenuLink.parentElement.contains(e.target)) {
+              if (chinaDropdown) chinaDropdown.style.display = 'none';
+            }
+          });
+        }
+      })();
+    </script>
+  </template>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>NAVI TOUR FOOTER</title>
+</head>
+<body>
+  <!-- ========================== 하단 맞춤 안내(문의 버튼) ========================== -->
+  <template id="layout-bottom-cta">
+    <section>
+      <style>
+        .bottom-box {
+          background: #f8fafc;
+          border-radius: 12px;
+          padding: 18px 18px;
+          text-align: center;
+          color: #1b3a6b;
+          font-size: 15px;
+          line-height: 1.6;
+          margin: 28px 0 40px;
+          border:1px solid var(--line);
+          box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .bottom-box b { color: #0f2a55; }
+        .bottom-box .btns {
+          display: flex; justify-content: center; align-items: center;
+          gap: 12px; margin-top: 14px; flex-wrap: wrap;
+        }
+        .bottom-box .ask {
+          display: inline-flex; align-items: center; justify-content: center;
+          gap: 8px; padding: 10px 18px; border-radius: 8px; font-weight: 600;
+          color: #fff; text-decoration: none; transition: 0.2s; height: 48px;
+          min-width: 150px; box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        .bottom-box .ask img.icon {
+          width: 18px; height: 18px; object-fit: contain; vertical-align: middle;
+          filter: brightness(0) invert(1);
+        }
+        .bottom-box .ask.kakao { background: #FEE500; color:#3c1e1e; }
+        .bottom-box .ask.kakao img.icon { filter: none; }
+        .bottom-box .ask.naver { background: #03C75A; }
+        .bottom-box .ask.email { background: #EA4335; }
+        .bottom-box .ask:hover { opacity:.9; transform: translateY(-2px); box-shadow: 0 5px 10px rgba(0,0,0,0.15); }
+      </style>
+
+      <div class="bottom-box">
+        <span><b>단체·학교·기업 대상</b> 맞춤형 일정 가능합니다. NAVI TOUR와 함께 당신만의 역사기행을 설계해 보세요.</span>
+        <div class="btns">
+          <a href="http://pf.kakao.com/_xhTUtn/chat " target="_blank" class="ask kakao">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/kakaotalk.svg" alt="KakaoTalk" class="icon">
+            카카오톡 문의
+          </a>
+          <a href="support\naver.html" target="_blank" class="ask naver">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/naver.svg" alt="Naver" class="icon">
+            네이버 문의
+          </a>
+          <a href="support\reception.html" class="ask email">
+            <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg" alt="Gmail" class="icon">
+            이메일 문의
+          </a>
+        </div>
+      </div>
+    </section>
+  </template>
+
+  <!-- ========================== 2. FOOTER (공통) ========================== -->
+  <template id="layout-footer">
+    <footer>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>EXPLORE</h4>
+          <a href="#">여행 상품</a>
+          <a href="#">테마 기행</a>
+        </div>
+        <div class="footer-col">
+          <h4>COMPANY</h4>
+          <a href="#">회사 소개</a>
+          <a href="#">목적지 & 경험</a>
+        </div>
+        <div class="footer-col">
+          <h4>LEGAL</h4>
+          <a href="#">개인정보처리방침</a>
+          <a href="#">이용약관</a>
+        </div>
+        <div class="footer-col">
+          <h4>CONNECT</h4>
+          <a href="#">공지사항</a>
+          <a href="support\qna.html">자주 묻는 질문 / QnA </a>
+          <a href="support\reception.html">문의하기</a>
+          <div class="social-icons">
+            <i class="fab fa-facebook-f"></i>
+            <i class="fab fa-twitter"></i>
+            <i class="fab fa-instagram"></i>
+          </div>
+        </div>
+      </div>
+      <p class="copyright">© 2025 NAVI TOUR. All rights reserved.</p>
+    </footer>
+  </template>
+</body>
+</html>

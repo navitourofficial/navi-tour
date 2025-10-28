@@ -1,0 +1,112 @@
+/* ========================================================================
+   NAVI TOUR: Header Logo (통합본)
+   - 기본 사이징 + 라인샤인 + 호버 + 그라디언트 링 + 하드닝
+   ======================================================================== */
+
+:root{
+  /* 튜닝 변수 */
+  --logo-max-h: 90px;          /* 기존 레이아웃 유지(90px). 바꾸고 싶으면 여기만 */
+  --hover-scale: 1.04;
+  --hover-lift: 1px;
+  --shadow-strength: 0.18;
+
+  --shine-angle: 120deg;
+  --shine-width: 16%;
+  --shine-speed: 900ms;
+
+  --ring-opacity: 0.9;
+  --ring-speed: 4s;
+
+  --radius: 12px;
+  --radius-border: 14px;
+
+  /* 전역에 이미 있으면 그 값 사용됨 */
+  --brand: #2b6cb0;
+  --gold:  #c8a84e;
+}
+
+/* ========== 1) 기본 사이징(레이아웃 맞춤) ========== */
+/* 기존 main/style의 로고 사이징을 이곳으로 일원화 */
+header .main-nav-logo-container{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20px;
+  height: var(--logo-max-h);
+  padding: 0;
+
+  /* 효과용 핵심 값 */
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  isolation: isolate;
+}
+
+header .main-nav-logo{
+  display: block;
+  height: auto;                 /* 고정값을 없애고 */
+  max-height: var(--logo-max-h);/* 컨테이너 높이 내에서 맞춤 */
+  width: auto;
+  max-width: none;
+  transition: transform .35s ease, filter .35s ease;
+  will-change: transform, filter;
+}
+
+/* ========== 2) 라인 샤인 ========== */
+header .main-nav-logo-container::after{
+  content:"";
+  position:absolute;
+  inset:-20%;
+  background:
+    linear-gradient(var(--shine-angle),
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0) calc(50% - var(--shine-width)),
+      rgba(255,255,255,.55) 50%,
+      rgba(255,255,255,0) calc(50% + var(--shine-width)),
+      rgba(255,255,255,0) 100%);
+  transform: translateX(-150%);
+  pointer-events:none;
+}
+header .main-nav-logo-container:hover::after{
+  animation: logoShine var(--shine-speed) ease;
+}
+@keyframes logoShine{ to { transform: translateX(150%); } }
+
+/* ========== 3) 호버 인터랙션 ========== */
+header .main-nav-logo-container:hover .main-nav-logo{
+  transform: translateY(calc(var(--hover-lift) * -1)) scale(var(--hover-scale));
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,var(--shadow-strength)));
+}
+
+
+header .main-nav-logo-container:hover::before{
+  opacity: var(--ring-opacity);
+  animation: logoRing var(--ring-speed) linear infinite;
+}
+@keyframes logoRing{ to { transform: rotate(1turn); } }
+
+/* ========== 5) 접근성(모션 축소) ========== */
+@media (prefers-reduced-motion: reduce){
+  header .main-nav-logo-container:hover .main-nav-logo{ transform: none; filter: none; }
+  header .main-nav-logo-container:hover::after,
+  header .main-nav-logo-container:hover::before{ animation: none; opacity: .4; }
+}
+
+/* ========== 6) 포커스 가시성 ========== */
+header .main-nav-logo-container a:focus-visible{
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+/* ========== 7) 하드닝(혹시 남은 규칙이 덮어써도 무력화) ========== */
+header .main-nav-logo-container{
+  position: relative !important;
+  overflow: hidden !important;
+  border-radius: var(--radius) !important;
+  isolation: isolate !important;
+}
+header .main-nav-logo{
+  max-height: var(--logo-max-h) !important;
+  height: auto !important;
+}

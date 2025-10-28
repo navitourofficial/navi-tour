@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="main_filter" content="width=device-width,initial-scale=1"/>
+<title>NAVI TOUR – Chip Filter (국가/검색 포함)</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --ink:#0e1726; --muted:#6b7785; --line:#e7ebf0;
+    --gold:#cbaa70; --mint:#e9f4ef;
+    --radius:18px; --shadow:0 10px 30px rgba(10,25,41,.08);
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 "Noto Sans KR",system-ui,Segoe UI,Roboto,Arial,sans-serif}
+
+  /* ====== FILTER ONLY ====== */
+  #navifilter{max-width:1200px;margin:0 auto;padding:0 16px}
+  .btn,.select{padding:9px 12px;border:1px solid var(--line);background:#fff;border-radius:999px;cursor:pointer}
+  .select{appearance:none}
+
+  .chipbar{position:sticky;top:0;z-index:10;background:#fff;
+    padding:10px;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+  .chipbar-inner{display:flex;gap:10px;align-items:center}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;flex:1 1 auto}
+  .tools{display:flex;gap:8px;flex:0 0 auto}
+
+  .chip{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--line);background:#fff;border-radius:999px;cursor:pointer}
+  .chip.active{border-color:var(--gold);box-shadow:0 0 0 2px rgba(203,170,112,.18)}
+  .chip .dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+  .chip .x{display:none}
+  .chip.filled{background:var(--mint);border-color:#d7e9e1}
+  .chip.filled .x{display:inline}
+  .muted{color:var(--muted)}
+
+  /* 패널: 가로 칩(필)로 줄바꿈 */
+  .panel{margin-top:10px;display:none;padding:14px;border:1px solid var(--line);border-radius:14px;background:#fff}
+  .panel.show{display:block}
+  .pillbox{display:flex;flex-wrap:wrap;gap:8px}
+  .pill{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);
+        border-radius:999px;background:#fff;cursor:pointer;white-space:nowrap}
+  .pill input[type="checkbox"]{width:16px;height:16px}
+
+  .range{display:flex;align-items:center;gap:10px}
+  .range input{width:100%}
+
+  /* 검색 X 버튼 */
+  .searchwrap{position:relative;display:flex;align-items:center}
+  .searchbox{width:100%;padding:10px 36px 10px 12px;border:1px solid var(--line);border-radius:12px;outline:none}
+  .clearx{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:1px solid var(--line);background:#fff;border-radius:999px;cursor:pointer;padding:4px 8px;line-height:1}
+  .clearx.hidden{display:none}
+</style>
+</head>
+<body>
+
+<!-- ===== 필터 루트 ===== -->
+<div id="navifilter" aria-label="상품 필터">
+
+  <div class="chipbar" id="nf-chipbar">
+    <div class="chipbar-inner">
+      <div class="chips">
+        <button class="chip" data-panel="nf-p-country"><span class="dot"></span>국가 <span class="muted nf-sel-country"></span><span class="x">✕</span></button>
+        <button class="chip" data-panel="nf-p-region"><span class="dot"></span>지역/도시 <span class="muted nf-sel-region"></span><span class="x">✕</span></button>
+        <button class="chip" data-panel="nf-p-duration"><span class="dot"></span>기간 <span class="muted nf-sel-duration"></span><span class="x">✕</span></button>
+        <button class="chip" data-panel="nf-p-price"><span class="dot"></span>가격 <span class="muted nf-sel-price"></span><span class="x">✕</span></button>
+        <button class="chip" data-panel="nf-p-hotel"><span class="dot"></span>호텔등급 <span class="muted nf-sel-hotel"></span><span class="x">✕</span></button>
+        <button class="chip" data-panel="nf-p-theme"><span class="dot"></span>테마 <span class="muted nf-sel-theme"></span><span class="x">✕</span></button>
+        <button class="chip" data-panel="nf-p-flags"><span class="dot"></span>옵션 <span class="muted nf-sel-flags"></span><span class="x">✕</span></button>
+        <button class="chip" data-panel="nf-p-search"><span class="dot"></span>검색 <span class="muted nf-sel-search"></span><span class="x">✕</span></button>
+      </div>
+      <div class="tools">
+        <select class="select" id="nf-sort" aria-label="정렬">
+          <option value="recommended">추천순</option>
+          <option value="price_asc">가격↑</option>
+          <option value="price_desc">가격↓</option>
+          <option value="days_asc">기간↑</option>
+          <option value="days_desc">기간↓</option>
+          <option value="newest">최신순</option>
+        </select>
+        <button class="btn" id="nf-reset">초기화</button>
+      </div>
+    </div>
+
+    <!-- 국가 -->
+    <div class="panel" id="nf-p-country">
+      <div class="pillbox">
+        <label class="pill"><input type="checkbox" value="china"  class="nf-country">중국</label>
+        <label class="pill"><input type="checkbox" value="japan"  class="nf-country">일본</label>
+        <label class="pill"><input type="checkbox" value="russia" class="nf-country">러시아</label>
+        <label class="pill"><input type="checkbox" value="usa"    class="nf-country">미국</label>
+      </div>
+    </div>
+
+    <!-- 지역/도시 (통합) -->
+    <div class="panel" id="nf-p-region">
+      <div class="muted" style="margin-bottom:6px"></div>
+      <div id="nf-loc-box" class="pillbox"></div>
+    </div>
+
+    <!-- 기간 -->
+    <div class="panel" id="nf-p-duration">
+      <div class="pillbox">
+        <label class="pill"><input type="checkbox" value="3-4" class="nf-duration">3–4일</label>
+        <label class="pill"><input type="checkbox" value="4-5" class="nf-duration">4–5일</label>
+        <label class="pill"><input type="checkbox" value="5-6" class="nf-duration">5–6일</label>
+        <label class="pill"><input type="checkbox" value="6-7" class="nf-duration">6–7일</label>
+        <label class="pill"><input type="checkbox" value="7+"  class="nf-duration">7일+</label>
+      </div>
+    </div>
+
+    <!-- 가격 (50만 ~ 500만) -->
+    <div class="panel" id="nf-p-price">
+      <div class="range">
+        <span>₩</span>
+        <input type="range" id="nf-minPrice" min="500000" max="5000000" step="50000" value="500000">
+        <input type="range" id="nf-maxPrice" min="500000" max="5000000" step="50000" value="5000000">
+        <span id="nf-priceLabel" class="muted"></span>
+      </div>
+    </div>
+
+    <!-- 호텔 -->
+    <div class="panel" id="nf-p-hotel">
+      <div class="pillbox">
+        <label class="pill"><input type="checkbox" value="3" class="nf-hotel">3성급</label>
+        <label class="pill"><input type="checkbox" value="4" class="nf-hotel">4성급</label>
+        <label class="pill"><input type="checkbox" value="5" class="nf-hotel">5성급</label>
+      </div>
+    </div>
+
+    <!-- 테마 -->
+    <div class="panel" id="nf-p-theme">
+      <div class="pillbox">
+        <label class="pill"><input type="checkbox" value="독립사" class="nf-theme">독립사</label>
+        <label class="pill"><input type="checkbox" value="임시정부" class="nf-theme">임시정부</label>
+        <label class="pill"><input type="checkbox" value="힐링" class="nf-theme">힐링</label>
+        <label class="pill"><input type="checkbox" value="탐방" class="nf-theme">탐방</label>
+        <label class="pill"><input type="checkbox" value="트레킹" class="nf-theme">트레킹</label>
+        <label class="pill"><input type="checkbox" value="백두산" class="nf-theme">백두산</label>
+      </div>
+    </div>
+
+    <!-- 옵션 -->
+    <div class="panel" id="nf-p-flags">
+      <div class="pillbox">
+        <label class="pill"><input type="checkbox" value="confirmed"   class="nf-flag">출발확정</label>
+        <label class="pill"><input type="checkbox" value="small_group" class="nf-flag">소그룹</label>
+        <label class="pill"><input type="checkbox" value="private_bus" class="nf-flag">전용차량</label>
+        <label class="pill"><input type="checkbox" value="trekking"    class="nf-flag">트레킹</label>
+        <label class="pill"><input type="checkbox" value="guide_kr"    class="nf-flag">가이드(한국어)</label>
+        <label class="pill"><input type="checkbox" value="highlight"   class="nf-flag">대표추천</label>
+      </div>
+    </div>
+
+    <!-- 검색 (X 버튼 포함) -->
+    <div class="panel" id="nf-p-search">
+      <div class="searchwrap">
+        <input type="text" id="nf-keyword" class="searchbox" placeholder="상품명/설명/지역 등 키워드 검색"/>
+        <button type="button" id="nf-clear" class="clearx hidden" aria-label="검색어 지우기">✕</button>
+      </div>
+      <div class="muted" style="margin-top:6px"></div>
+    </div>
+
+  </div><!-- /chipbar -->
+</div>
+
+<script>
+/* ========= 마스터 옵션(국가 → 지역/도시) ========= */
+const COUNTRY_REGIONS = {
+  china:[
+    {v:'seogando',label:'서간도'},{v:'bukgando',label:'북간도'},{v:'shanghai',label:'상해'},
+    {v:'chongqing',label:'충칭'},{v:'nanjing',label:'난징'},{v:'changsha',label:'창사'},{v:'yuzhou',label:'유주'}
+  ],
+  japan:[
+    {v:'tokyo',label:'도쿄'},{v:'kyoto',label:'교토'},{v:'osaka',label:'오사카'},
+    {v:'fukuona',label:'후쿠오카'},{v:'nagasaki',label:'나가사키'}
+  ],
+  russia:[
+    {v:'vladivostok',label:'블라디보스톡'},{v:'ussurisk',label:'우수리크스크'}
+  ],
+  usa:[{v:'hawaii',label:'하와이'}]
+};
+
+/* ========= 필터 상태 ========= */
+const NF_STATE = {
+  countries:new Set(),
+  regions:new Set(),    // 통합 로케이션 집합 (cities와 동일하게 유지)
+  cities:new Set(),     // 호환성 유지를 위해 regions와 같은 값
+  durations:new Set(),
+  priceMin:500000, priceMax:5000000,
+  hotels:new Set(), themes:new Set(), flags:new Set(),
+  sort:'recommended', keyword:''
+};
+const nfRoot = document.getElementById('navifilter');
+const qs = (s,root=document)=>root.querySelector(s);
+const qsa = (s,root=document)=>[...root.querySelectorAll(s)];
+
+/* ========= 유틸 ========= */
+function fmtPrice(n){ return '₩'+Number(n).toLocaleString()+'~'; }
+function dispatchChange(){ nfRoot.dispatchEvent(new CustomEvent('navifilter:change',{detail:getState()})); }
+function getState(){
+  const locs=[...NF_STATE.regions];
+  return {
+    countries:[...NF_STATE.countries],
+    regions:locs,            // 통합 값
+    cities:locs,             // 호환성: 동일 값 전달
+    durations:[...NF_STATE.durations],
+    priceMin:NF_STATE.priceMin, priceMax:NF_STATE.priceMax,
+    hotels:[...NF_STATE.hotels], themes:[...NF_STATE.themes], flags:[...NF_STATE.flags],
+    sort:NF_STATE.sort, keyword:NF_STATE.keyword
+  };
+}
+function resetState(){
+  for(const k of ['countries','regions','cities','durations','hotels','themes','flags']) NF_STATE[k].clear();
+  NF_STATE.priceMin=500000; NF_STATE.priceMax=5000000; NF_STATE.sort='recommended'; NF_STATE.keyword='';
+  qsa('#navifilter input[type=checkbox]').forEach(i=>i.checked=false);
+  qs('#nf-minPrice').value=500000; qs('#nf-maxPrice').value=5000000; qs('#nf-sort').value='recommended';
+  qs('#nf-keyword').value=''; toggleClear(false);
+  syncPriceLabel(); rebuildLocations(); updateChipLabels(); markFilled(); dispatchChange();
+}
+
+/* ========= 동적 로케이션 빌드(국가 선택 반영) ========= */
+function unionOptions(){
+  const selected=[...NF_STATE.countries];
+  const source = selected.length? selected : Object.keys(COUNTRY_REGIONS);
+  const list=[];
+  source.forEach(c=>list.push(...COUNTRY_REGIONS[c]));
+  const seen=new Set(), out=[];
+  for(const o of list){ if(!seen.has(o.v)){ seen.add(o.v); out.push(o); } }
+  return out; // [{v,label}]
+}
+function buildLocBox(){
+  const options = unionOptions();
+  // 현재 선택 중 옵션이 목록에 없으면 제거
+  const allowed = new Set(options.map(o=>o.v));
+  NF_STATE.regions = new Set([...NF_STATE.regions].filter(v=>allowed.has(v)));
+  NF_STATE.cities  = new Set(NF_STATE.regions); // 미러링
+
+  const box = qs('#nf-loc-box');
+  box.innerHTML = options.map(o=>
+    `<label class="pill"><input type="checkbox" value="${o.v}" class="nf-loc" ${NF_STATE.regions.has(o.v)?'checked':''}>${o.label}</label>`
+  ).join('');
+
+  qsa('#nf-loc-box .nf-loc').forEach(i=>{
+    i.addEventListener('change',()=>{
+      if(i.checked){ NF_STATE.regions.add(i.value); }
+      else{ NF_STATE.regions.delete(i.value); }
+      NF_STATE.cities = new Set(NF_STATE.regions); // 미러
+      updateChipLabels(); markFilled(); dispatchChange();
+    });
+  });
+}
+
+/* ========= UI 바인딩 ========= */
+function bindFilter(){
+  // 칩 토글
+  qsa('#nf-chipbar .chip').forEach(chip=>{
+    chip.addEventListener('click',()=>{
+      const id = chip.dataset.panel;
+      qsa('#nf-chipbar .panel').forEach(p=>p.classList.toggle('show', p.id===id ? !p.classList.contains('show') : false));
+      qsa('#nf-chipbar .chip').forEach(c=>c.classList.toggle('active', c===chip && qs('#'+id).classList.contains('show')));
+    });
+  });
+  document.addEventListener('click',e=>{
+    if(!qs('#nf-chipbar').contains(e.target)){
+      qsa('#nf-chipbar .panel').forEach(p=>p.classList.remove('show'));
+      qsa('#nf-chipbar .chip').forEach(c=>c.classList.remove('active'));
+    }
+  });
+
+  // 국가
+  qsa('.nf-country').forEach(i=>i.addEventListener('change',()=>{
+    i.checked? NF_STATE.countries.add(i.value) : NF_STATE.countries.delete(i.value);
+    buildLocBox(); updateChipLabels(); markFilled(); dispatchChange();
+  }));
+
+  // 기간/호텔/테마/옵션
+  const attach=(sel,set)=>qsa(sel).forEach(i=>i.addEventListener('change',()=>{
+    i.checked? set.add(i.value) : set.delete(i.value);
+    updateChipLabels(); markFilled(); dispatchChange();
+  }));
+  attach('.nf-duration',NF_STATE.durations);
+  attach('.nf-hotel',NF_STATE.hotels);
+  attach('.nf-theme',NF_STATE.themes);
+  attach('.nf-flag',NF_STATE.flags);
+
+  // 가격
+  ['nf-minPrice','nf-maxPrice'].forEach(id=>qs('#'+id).addEventListener('input',()=>{
+    syncPriceLabel(); updateChipLabels(); markFilled(); dispatchChange();
+  }));
+  syncPriceLabel();
+
+  // 검색 + X버튼
+  const kw=qs('#nf-keyword');
+  kw.addEventListener('input',e=>{
+    NF_STATE.keyword=e.target.value.trim();
+    toggleClear(!!NF_STATE.keyword);
+    updateChipLabels(); markFilled(); dispatchChange();
+  });
+  qs('#nf-clear').addEventListener('click',()=>{
+    NF_STATE.keyword=''; kw.value=''; toggleClear(false);
+    updateChipLabels(); markFilled(); dispatchChange();
+  });
+
+  // 정렬 / 초기화
+  qs('#nf-sort').addEventListener('change',e=>{ NF_STATE.sort=e.target.value; dispatchChange(); });
+  qs('#nf-reset').addEventListener('click',resetState);
+
+  // 초기 세팅
+  buildLocBox();
+  updateChipLabels(); markFilled(); dispatchChange();
+}
+
+function toggleClear(show){ qs('#nf-clear').classList.toggle('hidden',!show); }
+
+function syncPriceLabel(){
+  const a=Number(qs('#nf-minPrice').value), b=Number(qs('#nf-maxPrice').value);
+  if(a>b){ qs('#nf-minPrice').value=b; qs('#nf-maxPrice').value=a; }
+  NF_STATE.priceMin=Math.min(a,b); NF_STATE.priceMax=Math.max(a,b);
+  qs('#nf-priceLabel').textContent=`${fmtPrice(NF_STATE.priceMin)} ~ ${fmtPrice(NF_STATE.priceMax)}`;
+}
+
+function updateChipLabels(){
+  qs('.nf-sel-country').textContent = NF_STATE.countries.size ? `(${NF_STATE.countries.size})` : '';
+  qs('.nf-sel-region').textContent  = NF_STATE.regions.size ? `(${NF_STATE.regions.size})` : '';
+  qs('.nf-sel-duration').textContent= NF_STATE.durations.size ? `(${NF_STATE.durations.size})` : '';
+  qs('.nf-sel-price').textContent   = `(${fmtPrice(NF_STATE.priceMin)}–${fmtPrice(NF_STATE.priceMax)})`;
+  qs('.nf-sel-hotel').textContent   = NF_STATE.hotels.size ? `(${[...NF_STATE.hotels].join(',')}성)` : '';
+  qs('.nf-sel-theme').textContent   = NF_STATE.themes.size ? `(${NF_STATE.themes.size})` : '';
+  qs('.nf-sel-flags').textContent   = NF_STATE.flags.size ? `(${NF_STATE.flags.size})` : '';
+  const kw = NF_STATE.keyword;
+  qs('.nf-sel-search').textContent  = kw ? `(${kw.length>8?kw.slice(0,8)+'…':kw})` : '';
+}
+
+function markFilled(){
+  const filled = {
+    country: NF_STATE.countries.size,
+    region:  NF_STATE.regions.size,
+    duration:NF_STATE.durations.size,
+    price:   (NF_STATE.priceMin>500000 || NF_STATE.priceMax<5000000),
+    hotel:   NF_STATE.hotels.size,
+    theme:   NF_STATE.themes.size,
+    flags:   NF_STATE.flags.size,
+    search:  NF_STATE.keyword.length
+  };
+  qsa('#nf-chipbar .chip').forEach(ch=>{
+    const key = ch.dataset.panel.replace('nf-p-','');
+    ch.classList.toggle('filled', !!filled[key] || (key==='region' && filled.region));
+  });
+}
+
+/* ========= 공개 API ========= */
+function setState(partial){
+  if(partial.countries){ NF_STATE.countries=new Set(partial.countries); qsa('.nf-country').forEach(i=>i.checked=NF_STATE.countries.has(i.value)); }
+  if(typeof partial.priceMin==='number'){ NF_STATE.priceMin=partial.priceMin; qs('#nf-minPrice').value=partial.priceMin; }
+  if(typeof partial.priceMax==='number'){ NF_STATE.priceMax=partial.priceMax; qs('#nf-maxPrice').value=partial.priceMax; }
+  if(partial.sort){ NF_STATE.sort=partial.sort; qs('#nf-sort').value=partial.sort; }
+  if(typeof partial.keyword==='string'){ NF_STATE.keyword=partial.keyword; qs('#nf-keyword').value=partial.keyword; toggleClear(!!partial.keyword); }
+
+  buildLocBox(); // 국가 반영 후
+
+  // regions/cities를 통합 집합으로 반영
+  const locs = new Set([...(partial.regions||[]), ...(partial.cities||[])]);
+  if(locs.size){
+    NF_STATE.regions = new Set(locs);
+    NF_STATE.cities  = new Set(locs);
+    qsa('#nf-loc-box .nf-loc').forEach(i=>i.checked=NF_STATE.regions.has(i.value));
+  }
+
+  if(partial.durations){ NF_STATE.durations=new Set(partial.durations); qsa('.nf-duration').forEach(i=>i.checked=NF_STATE.durations.has(i.value)); }
+  if(partial.hotels){ NF_STATE.hotels=new Set(partial.hotels.map(String)); qsa('.nf-hotel').forEach(i=>i.checked=NF_STATE.hotels.has(i.value)); }
+  if(partial.themes){ NF_STATE.themes=new Set(partial.themes); qsa('.nf-theme').forEach(i=>i.checked=NF_STATE.themes.has(i.value)); }
+  if(partial.flags){ NF_STATE.flags=new Set(partial.flags); qsa('.nf-flag').forEach(i=>i.checked=NF_STATE.flags.has(i.value)); }
+
+  syncPriceLabel(); updateChipLabels(); markFilled(); dispatchChange();
+}
+window.NaviFilter = { getState, setState, reset: resetState, root: nfRoot };
+
+/* ========= 초기화 ========= */
+bindFilter();
+</script>
+</body>
+</html>
