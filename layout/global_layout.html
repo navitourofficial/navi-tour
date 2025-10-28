@@ -1,512 +1,410 @@
-<!-- ✅ layout/global_layout.html -->
+<!-- layout/global_layout.html : 페이지 공용 전역 스타일/스크립트 템플릿 -->
 <template id="global-layout-style">
 <style>
-    /* === 전역 기본 변수 (모든 페이지 공통) === */
+/* ======================================================================
+   0) 전역 변수 (디자인 노브 모음)
+   - 모든 페이지에서 공통으로 참조하는 CSS 커스텀 속성들입니다.
+   - 페이지 단위로 오버라이드하려면: <main> 상단이나 특정 섹션에 style="--변수:값"
+   ----------------------------------------------------------------------
+   • --line        : 경계선 기본 컬러
+   • --shadow      : 컴포넌트 표준 그림자
+   • --gold        : 포인트 골드 색 (배지/CTA 등)
+   • --hero-min-h  : 히어로 최소 높이 (clamp 로 반응형)
+   • --hero-grad   : 히어로 위 덮는 오버레이(그라디언트). 'none'이면 디밍 해제
+   • --sticky-offset: 상단 고정 탭의 상단 여유(px). JS(placeSideTabs)로 헤더 높이와 동기화
+====================================================================== */
 :root{
   --line:#e7ebf0;
   --shadow:0 12px 28px rgba(0,0,0,.08);
   --gold:#c6a24a;
+
+  /* Hero */
+  --hero-min-h: clamp(320px, 40vh, 520px);
+  /* 기본값: 좌→우로 점점 투명. 더 밝게 하려면 알파↓, 완전 해제는 'none' */
+  --hero-grad: none;
+
+  /* Sticky nav offset — JS에서 동기화 (헤더 총 높이 + 여유) */
+  --sticky-offset: 80px;
 }
 
-/* ----------------------- 1. Main Navigation Tabs (우측 사이드 고정) ----------------------- */
-.page-nav-tabs {
-    position: fixed;
-    /* 컨테이너 바깥 오른쪽 여백에 고정: 화면 중앙(50%) + 컨테이너 반폭(600px) + 간격(20px) */
-    left: calc(50% + 600px + (100vw - 1200px)/4);
-    transform: translateX(-50%);
-    /* top 값은 JS에서 헤더 높이에 맞춰 동적으로 세팅 */
-    z-index: 900;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    width: 220px;
-    background: transparent;
-    border: none;
-    padding: 0;
+/* ======================================================================
+   1) 페이지 상단/레이아웃 (기본)
+   - body: 타이포/배경
+   - header: 상단 고정(스크롤 시 따라옴)
+   - main: 중앙 최대폭 및 양 옆 패딩
+   • main의 padding이 크면 히어로/배너가 좌우로 들어가 보일 수 있음
+====================================================================== */
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #333;
+  line-height: 1.6;
+  background-color: #ffffff;
 }
 
-/* ----------------------- 1-1. 버튼 스타일 ----------------------- */
-.page-nav-tabs a {
-    display: flex;               
-    justify-content: center;     
-    align-items: center;         
-    text-align: center;          
-    width: 100%;
-    min-height: 50px;            
-    font-weight: 700;
-    color: #fff;
-    border-radius: 8px;
-    background-color: #003566;
-    border: 1px solid #356280;   /* ← 세미콜론 꼭 필요 */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    transition: all 0.2s ease;
+
+main {
+  max-width: 1200px;        /* 본문 최대폭 */
+  margin: 0 auto;           /* 가운데 정렬 */
+  padding: 20px;            /* 좌우 여백 (히어로를 풀블리드로 보이고 싶으면 히어로만 음수 마진으로 상쇄) */
+  padding-top: 0;           /* 헤더 바로 아래에서 시작 */
 }
 
-.page-nav-tabs a:hover {
-    background-color: #001d3d;
-    transform: translateY(-2px);
+/* ======================================================================
+   2) Hero (전역화)
+   - 배경 이미지를 CSS 변수로 주입: style="--hero-img:url('...')"
+   - 정렬: --hero-x 로 left/center/right 제어 (기본 center)
+   - 디밍(어둡게): --hero-grad 로 제어. none 이면 해제
+   - 텍스트 그림자: 밝은 사진 위 가독성 향상
+   - 상단 여백: margin-top (헤더 섀도우와 겹침 보이면 줄이거나 0)
+====================================================================== */
+.hero{
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: var(--hero-x, center);         /* left/center/right */
+  min-height: var(--hero-min-h);                  /* 최소 높이 */
+  background: var(--hero-img) center/cover no-repeat; /* 배경 이미지 주입 */
+  margin-top: 22px;                               /* 헤더와의 간격. 회색/섀도우 겹침 보이면 0~8px 권장 */
 }
-.page-nav-tabs a.active {
-    background-color: #001d3d !important; /* ✅ 최강조 컬러로 변경 */
-    color: #fff !important;
-    border-color: #001d3d !important; /* ✅ 최강조 컬러로 변경 */
-    box-shadow: 0 4px 10px rgba(4,75,125,0.18);
+.hero::before{
+  content:"";
+  position:absolute; inset:0;
+  pointer-events:none;
+  background: var(--hero-grad);                   /* 오버레이(디밍). none 으로 끄기 가능 */
+}
+.hero-content{
+  position: relative; z-index:1;
+  text-align:left; color:#fff;
+  max-width:560px;
+  padding-left: clamp(24px, 5vw, 72px);           /* 좌측 여백. 사진 좌측이 밝으면 늘리면 좋음 */
+}
+.hero-content h1{ margin:0 0 12px; font-weight:700; }
+.hero-content p { margin:0; line-height:1.75; opacity:.95; }
+
+/* 히어로 텍스트 가독성용 그림자 (밝은 배경에서 대비 확보) */
+.hero h1,.hero p{
+  text-shadow:
+    0 0 1px rgba(0,0,0,.75),
+    0 2px 8px rgba(0,0,0,.55);
+}
+@media (max-width: 640px){
+  .hero h1,.hero p{
+    text-shadow:
+      0 0 1px rgba(0,0,0,.85),
+      0 3px 10px rgba(0,0,0,.65);
+  }
 }
 
-/* ----------------------- 2. Content Sections ----------------------- */
-.content-section {
-    padding: 40px 0;
-    border-bottom: 1px solid #eee;
+/* 콘시어지 카드가 히어로 아래로 살짝 겹치게 (겹침 높이/그림자) */
+body .concierge{
+  margin-top: -30px;         /* 음수면 위로 당겨 겹침 */
+  position: relative;
+  z-index: 5;
+  box-shadow: var(--shadow);
 }
-.content-section:last-child {
-    border-bottom: none;
-}
+body .concierge .cta:hover{ background:#b18c32 !important; }
+@media (max-width:640px){ body .concierge{ margin-top:-32px; } }
+
+/* ======================================================================
+   3) 섹션 공통
+   - .content-section : 페이지의 큰 덩어리
+   - .section-title   : 좌측 컬러 바 + 큰 제목
+   - .subsection-title: 소제목 (점선 하단)
+   • 색/두께/바폭 조절로 톤 변경 가능
+====================================================================== */
+.content-section { padding: 40px 0; border-bottom: 1px solid #eee; }
+.content-section:last-child { border-bottom: none; }
 .section-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #000814;
-    border-left: 5px solid #000814;
-    padding-left: 15px;
-    margin-bottom: 30px;
+  position: relative;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #00183b;
+  border-left: none;         /* 좌측 실선 안 씀. 대신 ::before로 그라디언트 바 */
+  padding-left: 20px;        /* 바와 타이틀 간격 */
+  margin-bottom: 30px;
+}
+.section-title::before {
+  content: '';
+  position: absolute; left: 0; top: 5px; bottom: 5px;
+  width: 6px; border-radius: 3px;                 /* 바 둥글기/두께 */
+  background: linear-gradient(180deg,#000814, #1b3a6b );
 }
 .subsection-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #333;
-    margin-top: 25px;
-    margin-bottom: 15px;
-    padding-bottom: 5px;
-    border-bottom: 2px dashed #eee;
+  font-size: 1.5rem; font-weight: 700; color: #333;
+  margin-top: 25px; margin-bottom: 15px; padding-bottom: 5px;
+  border-bottom: 2px dashed #eee;                 /* 점선 두께/색 변경 가능 */
 }
 
-/* ----------------------- 3. 유적지 카드 스타일 ----------------------- */
+/* ======================================================================
+   4) 페이지 내 탭 내비 (Sticky + Blur)
+   - .page-nav-tabs : 상단 고정 탭 바 (카테고리/섹션 이동)
+   - 위치: --sticky-offset 로 동기화 (헤더 높이만큼 자동보정)
+   - 배경: color-mix + backdrop-filter 로 유리 느낌
+   - 링크: 기본 네이비 톤. active/hover 색상 조절
+====================================================================== */
+.page-nav-tabs{
+  position: static;
+  top: auto;                 /* 헤더 높이에 따라 자동 보정됨(JS) */
+  z-index: 30;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, #ffffff 80%, transparent); /* 흰색 80% 유리 */
+  backdrop-filter: saturate(180%) blur(8px);       /* 채도/블러 강도 */
+  -webkit-backdrop-filter: saturate(180%) blur(8px);
+  box-shadow: var(--shadow);
+  margin: 12px 0 20px;
+}
+.page-nav-tabs a{
+  display:flex; align-items:center; justify-content:center;
+  padding: 10px 14px; min-height: 44px;
+  border-radius: 8px; font-weight: 700; text-align: center;
+  border: 1px solid #356280;                       /* 외곽선 */
+  background-color: #003566;                       /* 배경 */
+  color:#fff; text-decoration:none;
+  transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease;
+}
+.page-nav-tabs a:hover{
+  background-color:#001d3d;                        /* 호버 색 */
+  transform: translateY(-2px);
+}
+.page-nav-tabs a.active,
+.page-nav-tabs a[aria-current="true"]{
+  background-color:#001d3d !important;
+  color:#fff !important;
+  border-color:#001d3d !important;
+  box-shadow: 0 4px 10px rgba(4,75,125,0.18);
+}
+
+/* 모바일 바 형태로 전환 (가로 꽉 채우기) */
+@media (max-width: 768px){
+  .page-nav-tabs{
+    position: static;                               /* 모바일은 고정 해제 */
+    width: 100%;
+    gap: 8px;
+    background-color: #f7f7f7;
+    border-top: 1px solid #ddd;
+    border-bottom: 3px solid #044b7d;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 10px;
+    margin: 0 0 10px;
+  }
+  .page-nav-tabs a{ flex:1; }                      /* 버튼을 균등 분배 */
+}
+
+/* ======================================================================
+   5) 유적지 카드 그리드
+   - 3열 그리드 + 정사각 이미지
+   - PC 강제 3열 유지 유틸 포함 (외부 CSS 충돌 시 방어)
+====================================================================== */
 .historic-site-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* ✅ 3열 고정 */
-    gap: 20px;
-    margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 20px;
 }
 .site-card {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease;
-    background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  transition: transform .3s ease;
+  background-color: #fff;
 }
 .site-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
 }
 .site-card img {
-    width: 100%;
-    aspect-ratio: 1 / 1; /* ✅ 정사각형 비율 유지 */
-    object-fit: cover;
+  width: 100%;
+  aspect-ratio: 1 / 1;        /* 정사각 비율 고정. 직사각이 필요하면 4/3 등으로 */
+  object-fit: cover;
+  display:block;
 }
-.site-card-body {
-    padding: 15px;
-}
+.site-card-body { padding: 15px; }
 .site-card-body h5 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #4a7c9d;
-    margin-bottom: 10px;
-    text-align: center;
+  font-size: 1.2rem; font-weight: 700; color: #4a7c9d;
+  margin-bottom: 6px; text-align: center;
 }
-.site-card-body p {
-    font-size: 0.9rem;
-    color: #666;
-}
+.site-card-body p { font-size: .9rem; color: #666; }
 
-/* ====== 3-1. PC용 오버라이드: 3열 강제 유지 및 정사각 비율 고정 ====== */
+/* PC 강제 3열 고정 (다른 CSS가 float 등으로 깨뜨릴 때 강제 리셋) */
 @media (min-width: 1024px) {
   .historic-site-grid {
     display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(3, minmax(0,1fr)) !important;
     gap: 20px !important;
   }
-  .site-card {
-    width: 100% !important;
-    float: none !important;
-  }
-  .site-card img {
-    width: 100% !important;
-    height: auto !important;
-    aspect-ratio: 1 / 1 !important;
-    object-fit: cover !important;
-    display: block !important;
+  .site-card { width:100% !important; float:none !important; }
+  .site-card img{
+    width:100% !important; height:auto !important;
+    aspect-ratio:1/1 !important; object-fit:cover !important;
+    display:block !important;
   }
 }
-/* =============================================================== */
 
-/* ----------------------- 4. 전문가 소개 카드 스타일 ----------------------- */
+/* ======================================================================
+   6) 전문가 카드
+   - 배경 톤/보더/라운드/프로필 크기 조절로 카드 무드 변경 가능
+====================================================================== */
 .expert-card {
-    text-align: center;
-    padding: 20px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
 }
 .expert-card .profile-img {
-    width: 100px;
-    height: 100px;
-    background-color: #ccc;
-    border-radius: 50%;
-    margin: 0 auto 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2rem;
-    color: #fff;
-    overflow: hidden;
+  width: 100px; height: 100px; background:#ccc; border-radius: 50%;
+  margin: 0 auto 15px; display:flex; justify-content:center; align-items:center;
+  font-size: 2rem; color:#fff; overflow:hidden;
 }
-.expert-card h5 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin-bottom: 5px;
+.expert-card h5 { font-size: 1.1rem; font-weight:700; margin-bottom:5px; }
+.expert-card span { display:block; color:#4a7c9d; font-size:.9rem; margin-bottom:10px; }
+.expert-card p { font-size:.85rem; color:#666; }
+
+/* ======================================================================
+   7) 상품 테이블 & 후기 카드
+   - 표는 zebra-striping, 링크 색상 등 기본 톤
+   - 후기 카드는 별점/기울임/서명 영역 포함
+====================================================================== */
+.product-table, .review-grid { width:100%; border-collapse: collapse; margin-top:20px; }
+.product-table th, .product-table td { border:1px solid #ddd; padding:12px; text-align:left; }
+.product-table th { background:#f0f0f0; font-weight:700; color:#333; }
+.product-table tr:nth-child(even){ background:#fafafa; }
+.product-table a { color:#4a7c9d; text-decoration:none; font-weight:500; }
+
+.review-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px,1fr)); /* 칼럼 자동 채움 */
+  gap: 25px;
 }
-.expert-card span {
-    display: block;
-    color: #4a7c9d;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
+.review-card{
+  padding:20px; border:1px solid #ddd; border-radius:8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+  background:#fff; display:flex; flex-direction:column; justify-content:space-between;
 }
-.expert-card p {
-    font-size: 0.85rem;
-    color: #666;
+.review-card .rating{ color: gold; margin-bottom:10px; }
+.review-card p{ font-style: italic; margin-bottom: 15px; }
+.review-card .reviewer{ font-size:.9rem; font-weight:700; color:#555; text-align:right; }
+
+/* 버튼 공통 톤 (네이비) */
+.btn-primary{
+  display:inline-block; padding:10px 20px; background:#044b7d; color:#fff;
+  text-decoration:none; border-radius:5px; font-weight:700; transition:background-color .3s;
+}
+.btn-primary:hover{ background:#033c63; }
+
+/* 지도 placeholder (실제 지도 삽입 전 임시 블록) */
+.map-placeholder{
+  width:100%; height:400px; background:#e0e0e0; border:1px solid #ccc; border-radius:8px;
+  display:flex; justify-content:center; align-items:center; font-size:1.5rem; color:#666; margin-top:20px;
 }
 
-/* ----------------------- 5. 상품 리스트 스타일 ----------------------- */
-.product-table, .review-grid {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-.product-table th, .product-table td {
-    border: 1px solid #ddd;
-    padding: 12px;
-    text-align: left;
-}
-.product-table th {
-    background-color: #f0f0f0;
-    font-weight: 700;
-    color: #333;
-}
-.product-table tr:nth-child(even) {
-    background-color: #fafafa;
-}
-.product-table a {
-    color: #4a7c9d;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-/* ----------------------- 6. 후기 카드 스타일 ----------------------- */
-.review-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 25px;
-}
-.review-card {
-    padding: 20px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-.review-card .rating {
-    color: gold;
-    margin-bottom: 10px;
-}
-.review-card p {
-    font-style: italic;
-    margin-bottom: 15px;
-}
-.review-card .reviewer {
-    font-size: 0.9rem;
-    font-weight: 700;
-    color: #555;
-    text-align: right;
-}
-
-/* ----------------------- 7. 버튼 공통 스타일 ----------------------- */
-.btn-primary {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: #044b7d;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    font-weight: 700;
-    transition: background-color 0.3s;
-}
-.btn-primary:hover {
-    background-color: #033c63;
-}
-
-/* ----------------------- 8. 지도/플레이스홀더 ----------------------- */
-.map-placeholder {
-    width: 100%;
-    height: 400px;
-    background-color: #e0e0e0;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
-    color: #666;
-    margin-top: 20px;
-}
-
-/* ========================================= */
-/* 추천의 말 섹션 스타일 (네이비 & 하단 우측 정렬) */
-/* ========================================= */
+/* ======================================================================
+   8) 추천의 말 카드 (네이비 톤)
+   - .recommendation-card : 상단 4px 그라디언트 바 + 호버 상승
+   - 팔레트 변수로 메인/보더/섀도우 제어
+====================================================================== */
 :root {
-    --reco-navy-main: #1a2e4f;        /* 진한 네이비 */
-    --reco-navy-accent: #4f6894;      /* 실버 블루 */
-    --reco-navy-border: rgba(33,56,87,.15);
-    --reco-card-shadow: 0 8px 20px rgba(26,46,79,.10);
-    --reco-top-gradient: linear-gradient(135deg, #1a2e4f 0%, #4f6894 100%);
+  --reco-navy-main:#1a2e4f; --reco-navy-accent:#4f6894;
+  --reco-navy-border:rgba(33,56,87,.15); --reco-card-shadow:0 8px 20px rgba(26,46,79,.10);
+  --reco-top-gradient: linear-gradient(135deg, #1a2e4f 0%, #4f6894 100%);
+}
+.recommendation-grid{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-top:20px;
+}
+.recommendation-card{
+  background:#fff; border:1px solid var(--reco-navy-border); border-radius:18px;
+  box-shadow: var(--reco-card-shadow);
+  padding:40px 32px 70px; position:relative; overflow:hidden;
+  transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.recommendation-card::before{
+  content:""; position:absolute; top:0; left:0; width:100%; height:4px;
+  background: var(--reco-top-gradient);
+}
+.recommendation-card:hover{
+  transform: translateY(-5px);
+  box-shadow:0 14px 28px rgba(26,46,79,.15);
+  border-color: rgba(33,56,87,.25);
+}
+.recommendation-card blockquote{
+  font-style: italic; color:#333; font-size:1rem; line-height:1.8; margin:30px 0 0;
+  border-left:none; padding-left:0; quotes:"“" "”" "‘" "’";
+  min-height:140px;                                   /* 일정 높이 확보로 푸터가 들뜨지 않게 */
+}
+.recommendation-footer{
+  position:absolute; right:32px; bottom:25px; text-align:right;
+}
+.recommendation-card .author{ font-weight:700; color:var(--reco-navy-main); font-size:1rem; margin:0 0 2px 0; }
+.recommendation-card .title{ font-size:.9rem; color:#7489b6; margin:0; }
+
+/* 넓은 화면일 때 오른쪽 고정 탭을 쓰지 않는 레이아웃을 가정하고 패딩 보정 */
+@media (max-width: 1400px){
+  main { padding-right: 20px; }
 }
 
-.recommendation-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 기존 3열 유지 */
-    gap: 20px;
-    margin-top: 20px;
+/* 모바일 레이아웃 보정 */
+@media (max-width: 768px){
+  .historic-site-grid{ grid-template-columns:1fr; }
 }
 
-.recommendation-card {
-    background: #fff;
-    border: 1px solid var(--reco-navy-border);
-    border-radius: 18px;
-    box-shadow: var(--reco-card-shadow);
-    padding: 40px 32px 70px; /* 하단 여유공간 확보 */
-    position: relative;
-    overflow: hidden;
-    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+/* ======================================================================
+   9) 개요·역사(Intro) 섹션 카드
+   - 좌측 진한 바(보더-left) + 내부 맵 패턴 워터마크
+   - 타이포/간격은 에디토리얼 톤
+====================================================================== */
+.intro-section { margin-top: 0px; margin-bottom: 50px; line-height:1.8; color:#333; }
+.intro-card{
+  background:#fff !important; border-left:6px solid #01030b; border-radius:10px;
+  padding: 1.2rem 2.2rem 2rem;
+  line-height:1.9; box-shadow:0 6px 16px rgba(0,0,0,0.06);
+  position:relative; overflow:hidden; color:#222;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
 }
-.recommendation-card::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 4px;
-    background: var(--reco-top-gradient);
-    border-radius: 18px 18px 0 0;
+.intro-card::after{
+  content:""; position:absolute; right:10px; bottom:10px; width:180px; height:120px;
+  background:url('image/decor/map_pattern.svg') no-repeat center/contain; opacity:.05; pointer-events:none;
 }
-.recommendation-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 14px 28px rgba(26,46,79,.15);
-    border-color: rgba(33,56,87,.25);
+.intro-card h3{ color:#1b3a6b; font-weight:800; font-size:1.6rem; margin-bottom:1.2rem; }
+.intro-card p{
+  color:#222; font-size:1.06rem; line-height:1.9; text-align:left; margin:0;
+  letter-spacing:.02em; word-break: keep-all;
 }
+.intro-card p + p{ margin-top:1rem; }
+.intro-card .readable{ max-width:72ch; margin:0 auto; }
+@media (max-width:768px){
+  .intro-card{ padding:1.2rem 1.4rem; }
+  .intro-card h3{ font-size:1.4rem; }
+  .intro-card .readable{ max-width:none; }
+}
+/* 타이틀 여백 조정 (상위 공통과 조화) */
+.section-title { margin-bottom: 5px; }
+.intro-card .subsection-title { margin-top:0; }
+.intro-card > *:first-child { margin-top:0; }
 
-/* 본문(인용문) */
-.recommendation-card blockquote {
-    font-style: italic;
-    color: #333;
-    font-size: 1rem;
-    line-height: 1.8;
-    margin: 30px 0 0;
-    border-left: none;   /* 기존 세로줄 제거 유지 */
-    padding-left: 0;
-    quotes: "“" "”" "‘" "’";
-    min-height: 140px;  /* 문단 길이 달라도 카드 높이 맞춤 */
-    flex-grow: 0;       /* 카드 하단 고정용 absolute와 충돌 방지 */
-}
-.recommendation-card blockquote:before {
-    content: none; /* 큰 따옴표 장식 사용 안함(요청사항 유지) */
-}
-
-/* 하단 오른쪽 정렬 고정 영역 */
-.recommendation-footer {
-    position: absolute;
-    right: 32px;
-    bottom: 25px;
-    text-align: right;
-    margin-top: 0; /* 고정 배치로 간격 불필요 */
-}
-.recommendation-card .author {
-    font-weight: 700;
-    color: var(--reco-navy-main);
-    font-size: 1rem;
-    margin: 0 0 2px 0;
-}
-.recommendation-card .title {
-    font-size: 0.9rem;
-    color: #7489b6; /* 실버 블루 톤 */
-    margin: 0;
-}
-
-/* ----------------------- 9. 반응형 디자인 ----------------------- */
-@media (max-width: 1400px) {
-    .page-nav-tabs {
-        left: auto; 
-        right: 20px;
-    }
-    main {
-        padding-right: 260px;
-    }
-}
-
-/* ----------------------- 9-1. 모바일 전용 ----------------------- */
-@media (max-width: 768px) {
-    main { padding-right: 20px; }
-    .page-nav-tabs {
-        position: static;
-        width: 100%;
-        right: auto;
-        left: auto;
-        top: auto;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        gap: 8px;
-        background-color: #f7f7f7;
-        border-top: 1px solid #ddd;
-        border-bottom: 3px solid #044b7d;
-        padding: 10px 0;
-    }
-    .page-nav-tabs a {
-        flex: 1;
-        text-align: center;
-        border-radius: 5px;
-    }
-    .page-hero-section h1 {
-        font-size: 2.5rem;
-    }
-    .historic-site-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ----------------------- ✅ 10. 개요 및 역사 섹션 개선 ----------------------- */
-.intro-section {
-    margin-top: 40px;
-    margin-bottom: 50px;
-    line-height: 1.8;
-    color: #333;
-}
-
-/* 큰 제목 (1. 개요 및 역사) — 기존 section-title 유지 강화 */
-.section-title {
-    position: relative;
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: #00183b;
-    border-left: none;
-    padding-left: 20px;
-    margin-bottom: 30px;
-}
-.section-title::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 5px;
-    bottom: 5px;
-    width: 6px;
-    border-radius: 3px;
-    background: linear-gradient(180deg,#000814, #1b3a6b );
-}
-
-/* “왜 북간도인가?” 박스 디자인 */
-.intro-card {   padding: 1.2rem 2.2rem 2rem; /* 🔥 위쪽만 줄임: 2rem → 1.2rem */
-
-    background: #fff !important; /* ✅ 흰 배경으로 변경 (가독성 향상) */
-    border-left: 6px solid #01030b;
-    border-radius: 10px;
-    padding: 2rem 2.2rem;
-    line-height: 1.9;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
-    position: relative;
-    overflow: hidden;
-    color: #222;
-    font-family: "Pretendard", "Noto Sans KR", system-ui, -apple-system,
-                 "Segoe UI", Roboto, "Apple SD Gothic Neo", "Malgun Gothic", "맑은 고딕", sans-serif;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-}
-
-/* 흐린 지도 패턴 배경 (텍스트 방해 안 되게 아주 옅게) */
-.intro-card::after {
-    content: "";
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-    width: 180px;
-    height: 120px;
-    background-image: url('image/decor/map_pattern.svg');
-    background-repeat: no-repeat;
-    background-size: contain;
-    opacity: 0.05; /* ✅ 더 옅게 조정 */
-    pointer-events: none;
-}
-
-/* 소제목 */
-.intro-card h3 {
-    color: #1b3a6b;
-    font-weight: 800;
-    font-size: 1.6rem;
-    margin-bottom: 1.2rem;
-}
-
-/* 본문 텍스트 */
-.intro-card p {
-    color: #222;
-    font-size: 1.06rem; /* ✅ 17px 정도 */
-    line-height: 1.9;
-    text-align: left; /* ✅ justify 제거 → 눈 흐름 안정 */
-    margin: 0;
-    letter-spacing: 0.02em;
-    word-break: keep-all; /* ✅ 한글 단어 단절 방지 */
-}
-
-/* 문단 간 여백 */
-.intro-card p + p {
-    margin-top: 1rem;
-}
-
-/* 가독 폭 제한 */
-.intro-card .readable {
-    max-width: 72ch;
-    margin: 0 auto;
-}
-
-/* 반응형 조정 */
-@media (max-width: 768px) {
-    .intro-card {
-        padding: 1.2rem 1.4rem;
-    }
-    .intro-card h3 {
-        font-size: 1.4rem;
-    }
-    .intro-card .readable {
-        max-width: none;
-    }
-}
-
-/* ------------------------------------------------------------------
-   ✅ [추가] ⑤ Ivory Editorial Luxe – 컴포넌트 스타일 (lux5-*)
--------------------------------------------------------------------*/
+/* ======================================================================
+   10) Ivory Editorial Luxe (lux5-*)
+   - 에디토리얼 표/패널 스타일 세트
+   - 테마 토글: .lux5--brand / .lux5--porcelain / .lux5--stone
+   - 표의 헤더/행 hover/배지/링크/노트 등 상세 음영 제어
+====================================================================== */
 .lux5-wrap { max-width: 1080px; margin: 0 auto; }
 .lux5-hr { height:1px; background:linear-gradient(90deg,transparent,#d9c083,transparent); border:0; margin:10px 0 16px; }
-
 .lux5-panel{
   background:#fffcf4; border:1px solid #e7dec9; border-radius:16px; overflow:hidden;
   box-shadow:0 18px 40px rgba(26,26,26,.06), inset 0 1px 0 #fff;
 }
-
-/* 헤더(옵션) */
 .lux5-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:18px }
 .lux5-title{ font-family:"Playfair Display",serif; font-weight:800; font-size:2.1rem; letter-spacing:.2px; color:#152a40; margin:0 }
 .lux5-kicker{ font-variant:small-caps; letter-spacing:.18em; color:#8c835f; opacity:.8; font-weight:700 }
 .lux5-sub{ margin:6px 0 20px; color:#6b7786 }
 
-/* 테이블 */
 table.lux5-table{ width:100%; border-collapse:separate; border-spacing:0 }
 .lux5-table thead th{
   text-align:left; padding:16px 18px 12px; border-bottom:1px solid #e7dec9;
@@ -519,7 +417,6 @@ table.lux5-table{ width:100%; border-collapse:separate; border-spacing:0 }
 .lux5-table tbody tr:last-child td{ border-bottom:0 }
 .lux5-table tbody tr:hover{ background:#fff8e9; transform:translateY(-1px) }
 
-/* 요소 */
 .lux5-badge{
   display:inline-block; padding:6px 10px; border-radius:999px;
   background:rgba(184,145,58,.08); color:#6c4f0e; border:1px solid rgba(184,145,58,.28);
@@ -534,16 +431,14 @@ table.lux5-table{ width:100%; border-collapse:separate; border-spacing:0 }
 }
 .lux5-link:hover{ background:#b8913a; color:#fff; border-color:#b8913a }
 
-/* 하단 노트(옵션) */
 .lux5-note{
   padding:16px 18px; color:#6c6a62; background:linear-gradient(180deg,#fff,#fffbf1);
   border-top:1px solid #e7dec9; display:flex; gap:10px; align-items:center
 }
 .lux5-dot{ width:8px; height:8px; border-radius:50%; background:#b8913a }
 
-/* 모바일 */
 @media (max-width:760px){
-  .lux5-table thead{ display:none }
+  .lux5-table thead{ display:none }                           /* 모바일: 헤더 숨기고 라벨을 각 셀 앞에 */
   .lux5-table, .lux5-table tbody, .lux5-table tr, .lux5-table td{ display:block; width:100% }
   .lux5-table tbody tr{ border-bottom:1px solid #e7dec9 }
   .lux5-table tbody td{ border:0; padding:12px 16px }
@@ -552,7 +447,7 @@ table.lux5-table{ width:100%; border-collapse:separate; border-spacing:0 }
   }
 }
 
-/* === 5번 컴포넌트 네이비 팔레트: Brand Navy Ivory === */
+/* 테마 토글 세트 (배경/보더/호버/배지/노트 팔레트 교체) */
 .lux5-panel.lux5--brand { background:#fffdf8; border-color:#e6eaf2; }
 .lux5--brand .lux5-table thead th{ color:#1b3a6b; border-bottom-color:#e6eaf2; }
 .lux5--brand .lux5-table tbody td{ border-bottom-color:#eef2f8; color:#0e2130; }
@@ -565,7 +460,6 @@ table.lux5-table{ width:100%; border-collapse:separate; border-spacing:0 }
 .lux5--brand .lux5-note{ background:linear-gradient(180deg,#fff,#f6fbff); border-top-color:#e6eaf2; }
 .lux5--brand .lux5-dot{ background:#1b3a6b; }
 
-/* === 맑은 쿨화이트: Porcelain Mist === */
 .lux5-panel.lux5--porcelain{ background:#f9fbfd; border-color:#e7edf6; }
 .lux5--porcelain .lux5-table thead th{ color:#23486f; border-bottom-color:#e7edf6; }
 .lux5--porcelain .lux5-table tbody td{ border-bottom-color:#edf2f7; color:#142334; }
@@ -578,7 +472,6 @@ table.lux5-table{ width:100%; border-collapse:separate; border-spacing:0 }
 .lux5--porcelain .lux5-note{ background:linear-gradient(180deg,#fff,#f4f8fd); border-top-color:#e7edf6; }
 .lux5--porcelain .lux5-dot{ background:#23486f; }
 
-/* === 따뜻한 중립톤: Warm Stone === */
 .lux5-panel.lux5--stone{ background:#fffefb; border-color:#eee6d6; }
 .lux5--stone .lux5-table thead th{ color:#283a53; border-bottom-color:#eee6d6; }
 .lux5--stone .lux5-table tbody td{ border-bottom-color:#f1eadc; color:#1f2a37; }
@@ -591,73 +484,82 @@ table.lux5-table{ width:100%; border-collapse:separate; border-spacing:0 }
 .lux5--stone .lux5-note{ background:linear-gradient(180deg,#fff,#fffbf3); border-top-color:#eee6d6; }
 .lux5--stone .lux5-dot{ background:#7a674b; }
 
-/* (선택) 섹션 배경 유틸 */
-.section-bg--porcelain{ background:linear-gradient(180deg,#f7f9fc 0%, #f4f7fb 100%); }
-.section-bg--ivory{ background:linear-gradient(180deg,#fffdf7 0%, #faf6ee 100%); }
-.section-bg--clean{ background:#ffffff; }
-
+/* 배경 유틸 (섹션 전체 톤을 부드럽게 바꿈) */
+.section-bg--porcelain{ background:linear-gradient(180deg,#f7f9fc, #f4f7fb); }
+.section-bg--ivory{ background:linear-gradient(180deg,#fffdf7, #faf6ee); }
+.section-bg--clean{ background:#fff; }
 </style>
 </template>
 
 <template id="global-layout-script">
 <script>
+/* ======================================================================
+   전역 스크립트
+   - 섹션 스크롤 스파이: 현재 보이는 섹션에 맞춰 탭 .active 토글
+   - sticky offset 동기화: 헤더(메인/서브) 실제 높이를 측정해 CSS 변수로 반영
+   - 탭 클릭 스무스 스크롤: 헤더 높이만큼 보정하여 정확히 섹션 상단에 정착
+   - 외부 호출: window.placeSideTabs() 로 재계산 강제 트리거 가능
+   ----------------------------------------------------------------------
+   성능 팁:
+   • 스크롤 이벤트는 가벼운 계산만 수행. 섹션 수가 많으면 requestAnimationFrame 스로틀 고려.
+====================================================================== */
 
-// ----------------------- 10. 페이지 내부 스크롤 시 탭 활성화 -----------------------
-const sections = document.querySelectorAll('.content-section');
-const navLinks = document.querySelectorAll('.page-nav-tabs a');
+/* 1) 스크롤 스파이: .active 토글 (현재 스크롤 위치 기준으로 섹션 id 추적) */
+const __sections = document.querySelectorAll('.content-section');   // 관찰할 섹션들
+const __navLinks = document.querySelectorAll('.page-nav-tabs a');   // 탭 링크 목록
 
 window.addEventListener('scroll', () => {
-    let current = '';
-    sections.forEach(section => {
-        const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--sticky-offset').trim();
-        const OFFSET = parseInt(cssVar || '80', 10);
-        const sectionTop = section.offsetTop - OFFSET - 1;
-        if (scrollY >= sectionTop) {
-            current = section.getAttribute('id');
-        }
-    });
+  let current = '';
+  __sections.forEach(section => {
+    // CSS 변수 --sticky-offset 읽어 현재 고정 탭 상단 여유를 반영
+    const cssVar = getComputedStyle(document.documentElement).getPropertyValue('--sticky-offset').trim();
+    const OFFSET = parseInt(cssVar || '80', 10);
+    const sectionTop = section.offsetTop - OFFSET - 1;  // 보정치(-1)는 경계에서 깜빡임 방지
+    if (scrollY >= sectionTop) current = section.getAttribute('id');
+  });
 
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === '#' + current) {
-            link.classList.add('active');
-        }
-    });
+  // nav 링크들 active 스위칭
+  __navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('href') === '#' + current) {
+      link.classList.add('active');
+    }
+  });
 });
 
-// ----------------------- 11. 우측 사이드 탭 위치 계산 -----------------------
-let __placeTries = 0;
+/* 2) sticky 오프셋 동기화 — 헤더(메인/서브) 높이 합산 후 CSS 변수/탭 top에 반영 */
+let __placeTries = 0;  // 초기 로딩 지연 시 재시도 카운터
 function placeSideTabs() {
-    const mainNav = document.querySelector('.main-nav');
-    const subNav  = document.querySelector('.sub-nav');
-    const header  = document.querySelector('header');
-    const tabs = document.querySelector('.page-nav-tabs');
-    if (!tabs) return;
+  const mainNav = document.querySelector('.main-nav'); // 상단 메인 네비 (로고/검색)
+  const subNav  = document.querySelector('.sub-nav');  // 하위 네비(카테고리/지역)
+  const header  = document.querySelector('header');
+  const tabs    = document.querySelector('.page-nav-tabs');
+  if (!tabs) return;                                    // 탭이 없는 페이지는 종료
 
-    let headerHeight =
-      (((mainNav && mainNav.offsetHeight) || 0) + ((subNav && subNav.offsetHeight) || 0));
+  // 실제 DOM 높이 측정 (요소가 없을 수 있어 0 대체)
+  let headerHeight = ((mainNav && mainNav.offsetHeight) || 0) + ((subNav && subNav.offsetHeight) || 0);
+  if (!headerHeight) headerHeight = (header && header.offsetHeight) || 0;
 
-    if (!headerHeight) {
-      headerHeight = (header && header.offsetHeight) || 0;
-    }
+  const OFFSET = 5; // 헤더 바로 아래 숨 쉬는 공간(픽셀). 0~12 권장.
 
-    const OFFSET = 5;
+  // 렌더 지연으로 높이를 못 받으면 재시도 (최대 40회, 약 2초)
+  if (!headerHeight && __placeTries < 40) {
+    __placeTries++;
+    setTimeout(placeSideTabs, 50);
+    return;
+  }
 
-    if (!headerHeight && __placeTries < 40) {
-      __placeTries++;
-      setTimeout(placeSideTabs, 50);
-      return;
-    }
-
-    tabs.style.top = (headerHeight + OFFSET) + 'px';
-
-    document.documentElement.style.setProperty('--sticky-offset', (headerHeight + OFFSET) + 'px');
+  // 탭 자체의 top 위치와, 전역 CSS 변수(--sticky-offset)를 동기화
+  tabs.style.top = (headerHeight + OFFSET) + 'px';
+  document.documentElement.style.setProperty('--sticky-offset', (headerHeight + OFFSET) + 'px');
 }
-window.addEventListener('load', placeSideTabs);
-window.addEventListener('resize', placeSideTabs);
-window.addEventListener('scroll', placeSideTabs);
+window.addEventListener('load', placeSideTabs);   // 초기 로드 시 계산
+window.addEventListener('resize', placeSideTabs); // 리사이즈 시 재계산 (반응형)
+window.addEventListener('scroll', placeSideTabs); // 헤더 높이가 동적으로 바뀌는 경우 대응(옵션)
 
-// ----------------------- 12. 네비 탭 클릭 시 정확한 위치로 스크롤 -----------------------
+/* 3) 탭 클릭: 헤더 높이 보정한 스무스 스크롤
+   - href="#section-id" 형태를 잡아 대상 섹션의 실제 Y 좌표로 스크롤
+   - --sticky-offset 만큼 위로 끌어올려 정확히 섹션 타이틀이 최상단에 오도록 */
 document.addEventListener('click', (e) => {
   const a = e.target.closest('.page-nav-tabs a[href^="#"]');
   if (!a) return;
@@ -674,5 +576,8 @@ document.addEventListener('click', (e) => {
   const y = target.getBoundingClientRect().top + window.scrollY - OFFSET;
   window.scrollTo({ top: y, behavior: 'smooth' });
 });
+
+/* 외부에서 호출 가능하도록 export (동적 헤더 토글/로고 로딩 후 강제 재배치 등에 사용) */
+window.placeSideTabs = placeSideTabs;
 </script>
 </template>
